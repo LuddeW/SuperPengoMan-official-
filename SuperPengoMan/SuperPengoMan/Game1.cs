@@ -13,6 +13,7 @@ namespace SuperPengoMan
 
         Texture2D penguin;
         Texture2D floor;
+        Texture2D background;
 
         Pengo pengo;
         FloorTile floortile;
@@ -37,6 +38,7 @@ namespace SuperPengoMan
             spriteBatch = new SpriteBatch(GraphicsDevice);
             penguin = Content.Load<Texture2D>(@"penguin_spritesheet");
             floor = Content.Load<Texture2D>(@"floor_tile");
+            background = Content.Load<Texture2D>(@"snow-landscape");
             pengo = new Pengo(penguin, new Vector2(0, 0));
             floortile = new FloorTile(floor, new Vector2(100, 100));
         }
@@ -59,6 +61,7 @@ namespace SuperPengoMan
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
+            spriteBatch.Draw(background, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), Color.White);
             pengo.Draw(spriteBatch);
             floortile.Draw(spriteBatch);
             spriteBatch.End();
