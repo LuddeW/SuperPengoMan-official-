@@ -53,9 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\floor_tile.png" />
+    <Content Include="Content\background.png" />
+    <Content Include="Content\ice_tile.png" />
     <Content Include="Content\penguin_spritesheet.png" />
-    <Content Include="Content\snow-landscape.jpg" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
