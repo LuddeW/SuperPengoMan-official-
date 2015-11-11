@@ -42,6 +42,7 @@
     <Compile Include="GameObject\FloorTile.cs" />
     <Compile Include="GameObject\GameObject.cs" />
     <Compile Include="GameObject\Pengo.cs" />
+    <Compile Include="GameObject\WaterTile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,6 +57,7 @@
     <Content Include="Content\background.png" />
     <Content Include="Content\ice_tile.png" />
     <Content Include="Content\penguin_spritesheet.png" />
+    <Content Include="Content\water_tile.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

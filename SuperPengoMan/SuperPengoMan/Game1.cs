@@ -18,8 +18,10 @@ namespace SuperPengoMan
         Texture2D penguin;
         Texture2D iceTile;
         Texture2D background;
+        Texture2D waterTile;
 
-        List<FloorTile> floorTile = new List<FloorTile>();
+        List<FloorTile> floortile = new List<FloorTile>();
+        List<WaterTile> watertile = new List<WaterTile>();
 
         Pengo pengo;
 
@@ -46,6 +48,7 @@ namespace SuperPengoMan
             penguin = Content.Load<Texture2D>(@"penguin_spritesheet");
             iceTile = Content.Load<Texture2D>(@"ice_tile");
             background = Content.Load<Texture2D>(@"background");
+            waterTile = Content.Load<Texture2D>(@"water_tile");
             CreateObjectFactory();
         }
 
@@ -84,10 +87,13 @@ namespace SuperPengoMan
             switch (objectChar)
             {
                 case 'F':
-                    floorTile.Add(new FloorTile(iceTile, pos));
+                    floortile.Add(new FloorTile(iceTile, pos));
                     break;
                 case 'S':
                     pengo = new Pengo(penguin, pos);
+                    break;
+                case 'W':
+                    watertile.Add(new WaterTile(waterTile, pos));
                     break;
 
             }
@@ -99,10 +105,14 @@ namespace SuperPengoMan
             spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (2 * TILE_SIZE), background.Width, background.Height), Color.White);
             pengo.Draw(spriteBatch);
-            foreach (FloorTile iceTile in floorTile)
+            foreach (FloorTile iceTile in floortile)
             {
                 iceTile.Draw(spriteBatch);
-            }           
+            }
+            foreach (WaterTile waterTile in watertile)
+            {
+                waterTile.Draw(spriteBatch);
+            }    
             spriteBatch.End();
             base.Draw(gameTime);
         }
