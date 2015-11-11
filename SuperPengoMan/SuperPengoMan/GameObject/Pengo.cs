@@ -34,7 +34,7 @@ namespace SuperPengoMan.GameObject
             this.glide = glide;
             this.jump = jump;
             speed = new Vector2(1, 1);
-            windowY = Game1.TILE_SIZE * 11;
+            windowY = Game1.TILE_SIZE * 15;
             
         }
 
@@ -51,15 +51,30 @@ namespace SuperPengoMan.GameObject
             clock.AddTime(0.03f);
         }
 
+        public bool IsColliding(FloorTile floorTile)
+        {
+            return hitbox.Intersects(floorTile.hitbox);
+        }
+
+        public void HandleCollision(FloorTile floorTile)
+        {
+            isOnGround = true;
+            speed.Y += 0.3f;
+            speed.X = 0;
+            hitbox.Y = floorTile.hitbox.Y - hitbox.Height;
+            pos.Y = hitbox.Y;
+        }
+
         private void MovePengo()
         {
             keyState = Keyboard.GetState();
             currentSprite = SpriteShow.hor;
             if (!isOnGround)
             {
-                speed.Y += 0.2f;
+                speed.Y += 0.3f;
                 speed.X = 0;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.jump;
             }
             if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.Down))
             {
@@ -115,10 +130,6 @@ namespace SuperPengoMan.GameObject
             {
                 srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 moving = false;   
-            }
-            else if (!isOnGround)
-            {
-                currentSprite = SpriteShow.jump;
             }
         }
 

@@ -67,9 +67,27 @@ namespace SuperPengoMan
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             pengo.Update();
-            
+            foreach (FloorTile iceTile in floortile)
+            {
+                if (pengo.IsColliding(iceTile))
+                {
+                    pengo.HandleCollision(iceTile);
+                }
+                iceTile.Update();
+            }
+            foreach (WaterTile waterTile in watertile)
+            {
+                waterTile.Update();
+            }
+            //if (pengo.posX > 450)
+            //{
+            //    pos -= 2;
+            //}
+
             base.Update(gameTime);
         }
+
+
 
         private void CreateObjectFactory()
         {
