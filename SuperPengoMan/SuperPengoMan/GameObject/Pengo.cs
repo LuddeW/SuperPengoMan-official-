@@ -25,6 +25,7 @@ namespace SuperPengoMan.GameObject
         private int windowY;
         private Rectangle hitbox;
         private bool moving = false;
+        private SpriteEffects spriteFx = SpriteEffects.None;
         
 
         public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Vector2 pos) : base(texture, pos)
@@ -64,11 +65,13 @@ namespace SuperPengoMan.GameObject
             {
                 speed.X = +2;
                 moving = true;
+                spriteFx = SpriteEffects.None;
             }
             if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.Down))
             {
                 speed.X = -2;
                 moving = true;
+                spriteFx = SpriteEffects.FlipHorizontally;
             }
             if (keyState.IsKeyDown(Keys.Up) && isOnGround)
             {
@@ -86,12 +89,14 @@ namespace SuperPengoMan.GameObject
             {
                 speed.X = +4;
                 currentSprite = SpriteShow.slide;
+                spriteFx = SpriteEffects.None;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Left) && isOnGround)
             {
                 speed.X = - 4;
                 currentSprite = SpriteShow.slide;
+                spriteFx = SpriteEffects.FlipHorizontally;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
 
@@ -109,7 +114,11 @@ namespace SuperPengoMan.GameObject
             if (isOnGround && moving)
             {
                 srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                moving = false;
+                moving = false;   
+            }
+            else if (!isOnGround)
+            {
+                currentSprite = SpriteShow.jump;
             }
         }
 
@@ -118,13 +127,13 @@ namespace SuperPengoMan.GameObject
             switch (currentSprite)
             {
                 case SpriteShow.hor:
-                    spriteBatch.Draw(texture, pos, srcRect, Color.White);
+                    spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
                 case SpriteShow.slide:
-                    spriteBatch.Draw(glide, pos, srcRect, Color.White);
+                    spriteBatch.Draw(glide, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
                 case SpriteShow.jump:
-                    spriteBatch.Draw(jump, pos, srcRect, Color.White);
+                    spriteBatch.Draw(jump, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
             }
         }

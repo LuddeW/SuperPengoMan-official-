@@ -9,7 +9,6 @@ namespace SuperPengoMan.GameObject
 {
     class FloorTile:GameObject
     {
-        Rectangle hitbox;
         public FloorTile(Texture2D texture, Vector2 pos) : base(texture, pos)
         {
             
