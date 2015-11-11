@@ -36,18 +36,11 @@ namespace SuperPengoMan.GameObject
             }
             MovePengo();
             clock.AddTime(0.03f);
-            //if (currentSprite == SpriteShow.hor)
-            //{
-            //    srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-            //}
-            //else
-            //{
-            //    srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-            //}
         }
 
         private void MovePengo()
         {
+            srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 pos.X++;
@@ -60,17 +53,32 @@ namespace SuperPengoMan.GameObject
                 currentSprite = SpriteShow.hor;
                 srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
+            else
+            {
+                currentSprite = SpriteShow.hor;
+            }
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 pos.Y--;
                 currentSprite = SpriteShow.jump;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.Down))
+            if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                pos.Y++;
+                pos.X --;
                 currentSprite = SpriteShow.slide;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                pos.X++;
+                currentSprite = SpriteShow.slide;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                pos.Y++;
             }
         }
 
