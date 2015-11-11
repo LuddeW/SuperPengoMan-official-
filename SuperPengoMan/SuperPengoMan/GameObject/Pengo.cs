@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,16 @@ namespace SuperPengoMan.GameObject
 
         public void Update()
         {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                pos.X++;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                pos.X--;
+            }
+
             clock.AddTime(0.03f);
             srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
         }
