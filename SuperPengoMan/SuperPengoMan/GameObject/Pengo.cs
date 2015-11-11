@@ -15,10 +15,17 @@ namespace SuperPengoMan.GameObject
 
         private Texture2D glide;
         private Texture2D jump;
+        KeyboardState keyState;
 
         private enum SpriteShow { hor, slide, jump}
         private SpriteShow currentSprite = SpriteShow.hor;
         private int pengoAnimation = 0;
+        private bool isOnGround = false;
+        private Vector2 speed;
+        private int windowX;
+        private int windowY;
+        private Rectangle hitbox;
+        private bool moving = false;
         
 
         public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Vector2 pos) : base(texture, pos)
@@ -26,61 +33,120 @@ namespace SuperPengoMan.GameObject
             clock = new Clock();
             this.glide = glide;
             this.jump = jump;
+            speed = new Vector2(1, 1);
+            windowX = Game1.TILE_SIZE * 15;
+            windowY = Game1.TILE_SIZE * 11;
+            
         }
 
         public void Update()
         {
+            hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
             if (pos.X < 0)
             {
                 pos.X = 0;
             }
+          
             MovePengo();
+            
             clock.AddTime(0.03f);
         }
 
         private void MovePengo()
         {
-            srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            keyState = Keyboard.GetState();
+            if (!isOnGround)
             {
-                pos.X++;
-                currentSprite = SpriteShow.hor;
-                srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                speed.Y += 0.2f;
+                speed.X = 0;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (keyState.IsKeyDown(Keys.Right) && pos.X + (texture.Width / 2) < windowX )
             {
-                pos.X--;
-                currentSprite = SpriteShow.hor;
-                srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                speed.X = 1;
+                moving = true;
             }
-            else
+            if (keyState.IsKeyDown(Keys.Left) && pos.X + (texture.Width / 2) > 0)
             {
-                currentSprite = SpriteShow.hor;
+                speed.X = -1;
+                moving = true;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (keyState.IsKeyDown(Keys.Up) && isOnGround)
             {
-                pos.Y--;
+                speed.Y = -6;
+                isOnGround = false;
                 currentSprite = SpriteShow.jump;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                pos.X --;
+            if (keyState.IsKeyDown(Keys.Down) && isOnGround)
+            {              
                 currentSprite = SpriteShow.slide;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Right))
+
+            pos += speed;
+            hitbox.X = (int)(pos.X > 0 ? pos.X + 0.5f : pos.X - 0.5f);
+            hitbox.Y = (int)(pos.Y > 0 ? pos.Y + 0.5f : pos.Y - 0.5f);
+
+            if (hitbox.Y + hitbox.Height >= windowY)
             {
-                pos.X++;
-                currentSprite = SpriteShow.slide;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                pos.Y = windowY - hitbox.Height;
+                isOnGround = true;
+                speed.Y = 0;
+                speed.X = 0;
+                currentSprite = SpriteShow.hor;
+
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            if (isOnGround && moving)
             {
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                pos.Y++;
+                srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                moving = false;
             }
         }
+
+        //private void MovePengo()
+        //{
+        //    srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+        //    {
+        //        pos.X++;
+        //        currentSprite = SpriteShow.hor;
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    }
+        //    else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+        //    {
+        //        pos.X--;
+        //        currentSprite = SpriteShow.hor;
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    }
+        //    else
+        //    {
+        //        currentSprite = SpriteShow.hor;
+        //    }
+        //    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+        //    {
+        //        pos.Y--;
+        //        currentSprite = SpriteShow.jump;
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    }
+        //    if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Left))
+        //    {
+        //        pos.X --;
+        //        currentSprite = SpriteShow.slide;
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    }
+        //    else if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Right))
+        //    {
+        //        pos.X++;
+        //        currentSprite = SpriteShow.slide;
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //    }
+        //    else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+        //    {
+        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+        //        pos.Y++;
+        //    }
+        //}
 
         public override void Draw(SpriteBatch spriteBatch)
         {
