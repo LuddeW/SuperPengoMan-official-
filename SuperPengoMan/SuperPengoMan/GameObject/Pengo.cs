@@ -22,7 +22,6 @@ namespace SuperPengoMan.GameObject
         private int pengoAnimation = 0;
         private bool isOnGround = false;
         private Vector2 speed;
-        private int windowX;
         private int windowY;
         private Rectangle hitbox;
         private bool moving = false;
@@ -34,7 +33,6 @@ namespace SuperPengoMan.GameObject
             this.glide = glide;
             this.jump = jump;
             speed = new Vector2(1, 1);
-            windowX = Game1.TILE_SIZE * 15;
             windowY = Game1.TILE_SIZE * 11;
             
         }
@@ -55,20 +53,21 @@ namespace SuperPengoMan.GameObject
         private void MovePengo()
         {
             keyState = Keyboard.GetState();
+            currentSprite = SpriteShow.hor;
             if (!isOnGround)
             {
                 speed.Y += 0.2f;
                 speed.X = 0;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (keyState.IsKeyDown(Keys.Right) && pos.X + (texture.Width / 2) < windowX )
+            if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.Down))
             {
-                speed.X = 1;
+                speed.X = +2;
                 moving = true;
             }
-            if (keyState.IsKeyDown(Keys.Left) && pos.X + (texture.Width / 2) > 0)
+            if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.Down))
             {
-                speed.X = -1;
+                speed.X = -2;
                 moving = true;
             }
             if (keyState.IsKeyDown(Keys.Up) && isOnGround)
@@ -83,6 +82,18 @@ namespace SuperPengoMan.GameObject
                 currentSprite = SpriteShow.slide;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
+            if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Right) && isOnGround)
+            {
+                speed.X = +4;
+                currentSprite = SpriteShow.slide;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            }
+            if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Left) && isOnGround)
+            {
+                speed.X = - 4;
+                currentSprite = SpriteShow.slide;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            }
 
             pos += speed;
             hitbox.X = (int)(pos.X > 0 ? pos.X + 0.5f : pos.X - 0.5f);
@@ -94,8 +105,6 @@ namespace SuperPengoMan.GameObject
                 isOnGround = true;
                 speed.Y = 0;
                 speed.X = 0;
-                currentSprite = SpriteShow.hor;
-
             }
             if (isOnGround && moving)
             {
@@ -103,50 +112,6 @@ namespace SuperPengoMan.GameObject
                 moving = false;
             }
         }
-
-        //private void MovePengo()
-        //{
-        //    srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    if (Keyboard.GetState().IsKeyDown(Keys.Right))
-        //    {
-        //        pos.X++;
-        //        currentSprite = SpriteShow.hor;
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    }
-        //    else if (Keyboard.GetState().IsKeyDown(Keys.Left))
-        //    {
-        //        pos.X--;
-        //        currentSprite = SpriteShow.hor;
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    }
-        //    else
-        //    {
-        //        currentSprite = SpriteShow.hor;
-        //    }
-        //    if (Keyboard.GetState().IsKeyDown(Keys.Up))
-        //    {
-        //        pos.Y--;
-        //        currentSprite = SpriteShow.jump;
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    }
-        //    if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Left))
-        //    {
-        //        pos.X --;
-        //        currentSprite = SpriteShow.slide;
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    }
-        //    else if (Keyboard.GetState().IsKeyDown(Keys.Down) && Keyboard.GetState().IsKeyDown(Keys.Right))
-        //    {
-        //        pos.X++;
-        //        currentSprite = SpriteShow.slide;
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //    }
-        //    else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-        //    {
-        //        srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        //        pos.Y++;
-        //    }
-        //}
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -166,7 +131,7 @@ namespace SuperPengoMan.GameObject
 
         private int PengoAnimation()
         {
-            if (clock.Timer() > 0.2f)
+            if (clock.Timer() > 0.1f)
             {
                 pengoAnimation++;
                 clock.ResetTime();
