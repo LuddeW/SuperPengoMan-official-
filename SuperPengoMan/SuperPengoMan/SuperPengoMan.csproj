@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Clock.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject\FloorTile.cs" />
     <Compile Include="GameObject\GameObject.cs" />
