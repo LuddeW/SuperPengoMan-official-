@@ -16,6 +16,8 @@ namespace SuperPengoMan
         SpriteBatch spriteBatch;
 
         Texture2D penguin;
+        Texture2D penguin_jump;
+        Texture2D penguin_glide;
         Texture2D iceTile;
         Texture2D background;
         Texture2D waterTile;
@@ -46,6 +48,8 @@ namespace SuperPengoMan
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
             penguin = Content.Load<Texture2D>(@"penguin_spritesheet");
+            penguin_jump = Content.Load<Texture2D>(@"penguin_jump");
+            penguin_glide = Content.Load<Texture2D>(@"penguin_glide");
             iceTile = Content.Load<Texture2D>(@"ice_tile");
             background = Content.Load<Texture2D>(@"background");
             waterTile = Content.Load<Texture2D>(@"water_tile");
@@ -90,7 +94,7 @@ namespace SuperPengoMan
                     floortile.Add(new FloorTile(iceTile, pos));
                     break;
                 case 'S':
-                    pengo = new Pengo(penguin, pos);
+                    pengo = new Pengo(penguin, penguin_glide, penguin_jump, pos);
                     break;
                 case 'W':
                     watertile.Add(new WaterTile(waterTile, pos));

@@ -57,6 +57,8 @@
   <ItemGroup>
     <Content Include="Content\background.png" />
     <Content Include="Content\ice_tile.png" />
+    <Content Include="Content\penguin_glide.png" />
+    <Content Include="Content\penguin_jump.png" />
     <Content Include="Content\penguin_spritesheet.png" />
     <Content Include="Content\water_tile.png" />
     <Content Include="Icon.ico" />
