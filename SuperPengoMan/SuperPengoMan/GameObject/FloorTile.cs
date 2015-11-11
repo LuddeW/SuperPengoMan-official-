@@ -13,11 +13,6 @@ namespace SuperPengoMan.GameObject
         public FloorTile(Texture2D texture, Vector2 pos) : base(texture, pos)
         {
             
-        }
-        public Rectangle GetRect()
-        {
-            return hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
-        }
-        
+        }      
     }
 }
