@@ -17,6 +17,8 @@ namespace SuperPengoMan.GameObject
         private Texture2D jump;
         KeyboardState keyState;
 
+        private enum HitState { top, left, right, none }
+        HitState currentHitState = HitState.none;
         private enum SpriteShow { hor, slide, jump}
         private SpriteShow currentSprite = SpriteShow.hor;
         private int pengoAnimation = 0;
@@ -53,16 +55,55 @@ namespace SuperPengoMan.GameObject
 
         public bool IsColliding(FloorTile floorTile)
         {
-            return hitbox.Intersects(floorTile.topHitbox);
+            if (hitbox.Intersects(floorTile.topHitbox))
+            {
+                
+                currentHitState = HitState.top;
+                return true;
+            }
+            else if (hitbox.Intersects(floorTile.leftHitbox))
+            {
+                currentHitState = HitState.left;
+                return true;
+            }
+            else if (hitbox.Intersects(floorTile.rightHitbox))
+            {
+                currentHitState = HitState.right;
+                return true;
+            }
+            else
+            {
+                currentHitState = HitState.none;
+                return false;
+            }
         }
 
         public void HandleCollision(FloorTile floorTile)
         {
-            isOnGround = true;
-            speed.Y = 5.0f;
-            speed.X = 0;
-            hitbox.Y = floorTile.topHitbox.Y - hitbox.Height;
-            pos.Y = hitbox.Y;
+            switch (currentHitState)
+            {
+                case HitState.top:
+                    isOnGround = true;
+                    speed.Y = 5.0f;
+                    speed.X = 0;
+                    hitbox.Y = floorTile.topHitbox.Y - hitbox.Height;
+                    pos.Y = hitbox.Y;
+                    break;
+                case HitState.left:
+                    speed.X = 0;
+                    hitbox.X = (int)pos.X - 1;
+                    pos.X = hitbox.X;
+                    break;
+                case HitState.right:
+                    speed.X = 0;
+                    hitbox.X = hitbox.X +1;
+                    pos.X = hitbox.X;
+                    break;
+                case HitState.none:
+                    break;
+                
+            }
+            
         }
 
         private void MovePengo()
