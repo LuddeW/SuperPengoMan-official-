@@ -23,11 +23,15 @@ namespace SuperPengoMan
         public void Update(Vector2 pengoPos)
         {
             position.X = pengoPos.X - (ScreenWidth / 2);
-            Console.WriteLine(pengoPos);
+            
 
             if (position.X < 0)
             {
                 position.X = 0;
+            }
+            else if (position.X > Game1.TILE_SIZE * 34 - ScreenWidth)
+            {
+                position.X = Game1.TILE_SIZE * 34 - ScreenWidth;
             }
 
             viewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));
