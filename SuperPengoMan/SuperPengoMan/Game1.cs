@@ -26,6 +26,7 @@ namespace SuperPengoMan
         List<WaterTile> watertile = new List<WaterTile>();
 
         Pengo pengo;
+        Camera camera;
 
         public Game1()
         {
@@ -54,6 +55,7 @@ namespace SuperPengoMan
             background = Content.Load<Texture2D>(@"background");
             waterTile = Content.Load<Texture2D>(@"water_tile");
             CreateObjectFactory();
+            camera = new Camera();
         }
 
         
@@ -75,7 +77,7 @@ namespace SuperPengoMan
                 }
                 
             }
-
+            camera.Update(pengo.pos);
             base.Update(gameTime);
         }
 
@@ -117,7 +119,7 @@ namespace SuperPengoMan
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix);
             spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (2 * TILE_SIZE), background.Width, background.Height), Color.White);
             pengo.Draw(spriteBatch);
             foreach (FloorTile iceTile in floortile)

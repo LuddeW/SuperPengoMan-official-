@@ -59,7 +59,7 @@ namespace SuperPengoMan.GameObject
         public void HandleCollision(FloorTile floorTile)
         {
             isOnGround = true;
-            speed.Y += 0.3f;
+            speed.Y = 5.0f;
             speed.X = 0;
             hitbox.Y = floorTile.hitbox.Y - hitbox.Height;
             pos.Y = hitbox.Y;
