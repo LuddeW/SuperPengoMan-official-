@@ -9,16 +9,23 @@ namespace SuperPengoMan.GameObject
 {
     class FloorTile:GameObject
     {
-        public Rectangle hitbox;
+        public Rectangle topHitbox;
+        public Rectangle leftHitbox;
+        public Rectangle rightHitbox;
         public FloorTile(Texture2D texture, Vector2 pos) : base(texture, pos)
         {
             this.texture = texture;
             this.pos = pos;
-            hitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
+            topHitbox = new Rectangle((int)pos.X + 1, (int)pos.Y, texture.Width / 2, 2);
+            leftHitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width / 2, texture.Height -1);
+            rightHitbox = new Rectangle((int)pos.X + texture.Width / 2, (int)pos.Y, texture.Width / 2, texture.Height -1);
+            
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, hitbox, Color.White);
+            spriteBatch.Draw(texture, topHitbox, Color.White);
+            spriteBatch.Draw(texture, leftHitbox, Color.Red);
+            spriteBatch.Draw(texture, rightHitbox, Color.Blue);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace SuperPengoMan.GameObject
 
         public bool IsColliding(FloorTile floorTile)
         {
-            return hitbox.Intersects(floorTile.hitbox);
+            return hitbox.Intersects(floorTile.topHitbox);
         }
 
         public void HandleCollision(FloorTile floorTile)
@@ -61,7 +61,7 @@ namespace SuperPengoMan.GameObject
             isOnGround = true;
             speed.Y = 5.0f;
             speed.X = 0;
-            hitbox.Y = floorTile.hitbox.Y - hitbox.Height;
+            hitbox.Y = floorTile.topHitbox.Y - hitbox.Height;
             pos.Y = hitbox.Y;
         }
 
