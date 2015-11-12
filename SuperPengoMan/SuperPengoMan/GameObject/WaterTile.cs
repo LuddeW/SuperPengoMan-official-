@@ -13,10 +13,5 @@ namespace SuperPengoMan.GameObject
         {
 
         }
-
-        public void Update()
-        {
-            pos.X -= 0.3f;
-        }
     }
 }
