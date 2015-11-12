@@ -91,12 +91,27 @@ namespace SuperPengoMan.GameObject
                     break;
                 case HitState.left:
                     speed.X = 0;
-                    hitbox.X = (int)pos.X - 1;
+                    if (currentSprite == SpriteShow.slide)
+                    {
+                        hitbox.X = (int)pos.X - 4;
+                    }
+                    else
+                    {
+                        hitbox.X = (int)pos.X - 2;
+                    }
                     pos.X = hitbox.X;
                     break;
                 case HitState.right:
                     speed.X = 0;
-                    hitbox.X = hitbox.X +1;
+                    if (currentSprite == SpriteShow.slide)
+                    {
+                        hitbox.X = (int)pos.X + 4;
+                    }
+                    else
+                    {
+                        hitbox.X = (int)pos.X + 2;
+                    }
+                    hitbox.X = hitbox.X +2;
                     pos.X = hitbox.X;
                     break;
                 case HitState.none:
