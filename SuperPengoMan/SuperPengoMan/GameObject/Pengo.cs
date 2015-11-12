@@ -26,7 +26,9 @@ namespace SuperPengoMan.GameObject
         private Rectangle hitbox;
         private bool moving = false;
         private SpriteEffects spriteFx = SpriteEffects.None;
-        
+        private float movingXSpeed;
+        private float floorXSpeed;
+
 
         public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Vector2 pos) : base(texture, pos)
         {
@@ -72,19 +74,22 @@ namespace SuperPengoMan.GameObject
             if (!isOnGround)
             {
                 speed.Y += 0.3f;
-                speed.X = 0;
+                SetMovingXSpeed(0);
+                speed.X = GetScreenXSpeed();
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 currentSprite = SpriteShow.jump;
             }
             if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.Down))
             {
-                speed.X = +2;
+                SetMovingXSpeed(+2);
+                speed.X = GetScreenXSpeed();
                 moving = true;
                 spriteFx = SpriteEffects.None;
             }
             if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.Down))
             {
-                speed.X = -2;
+                SetMovingXSpeed(-2);
+                speed.X = GetScreenXSpeed();
                 moving = true;
                 spriteFx = SpriteEffects.FlipHorizontally;
             }
@@ -102,14 +107,16 @@ namespace SuperPengoMan.GameObject
             }
             if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Right) && isOnGround)
             {
-                speed.X = +4;
+                SetMovingXSpeed(+4);
+                speed.X = GetScreenXSpeed();
                 currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.None;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Left) && isOnGround)
             {
-                speed.X = - 4;
+                SetMovingXSpeed(-4);
+                speed.X = GetScreenXSpeed();
                 currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.FlipHorizontally;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
@@ -132,6 +139,40 @@ namespace SuperPengoMan.GameObject
                 moving = false;   
             }
         }
+
+        public float GetScreenXSpeed()
+        {
+            if (MovingRightAndScrollFloor || MovingLeftAndScrollFloor)
+            {
+                floorXSpeed = -movingXSpeed;
+                return 0;
+            }
+            else
+            {
+                floorXSpeed = 0;
+                return movingXSpeed;
+            }
+        }
+
+        private void SetMovingXSpeed(float speedX)
+        {
+            movingXSpeed = speedX;
+        }
+
+        private bool MovingRightAndScrollFloor
+        {
+            get { return pos.X.CompareTo(Game1.TILE_SIZE * 15 * 0.67f) == 1 &&
+                    movingXSpeed.CompareTo(0f) == 1; }
+        }
+
+        private bool MovingLeftAndScrollFloor
+        {
+            get { return pos.X.CompareTo(Game1.TILE_SIZE * 15 * 0.33f) == -1 &&
+                    movingXSpeed.CompareTo(0f) == -1; }
+        }
+
+        public float FloorXSpeed { get {return floorXSpeed; }}
+
 
         public override void Draw(SpriteBatch spriteBatch)
         {

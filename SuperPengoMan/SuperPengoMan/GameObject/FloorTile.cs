@@ -16,9 +16,9 @@ namespace SuperPengoMan.GameObject
             this.pos = pos;          
         }
 
-        public void Update()
+        public void Update(float floorSpeed)
         {
-            pos.X -= 0.3f;
+            pos.X += floorSpeed;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
         }
 

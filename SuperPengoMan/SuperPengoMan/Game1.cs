@@ -67,17 +67,18 @@ namespace SuperPengoMan
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             pengo.Update();
+            float floorXSpeed = pengo.FloorXSpeed; ;
             foreach (FloorTile iceTile in floortile)
             {
                 if (pengo.IsColliding(iceTile))
                 {
                     pengo.HandleCollision(iceTile);
                 }
-                iceTile.Update();
+                iceTile.Update(floorXSpeed);
             }
             foreach (WaterTile waterTile in watertile)
             {
-                waterTile.Update();
+                waterTile.Update(floorXSpeed);
             }
             //if (pengo.posX > 450)
             //{
@@ -91,6 +92,7 @@ namespace SuperPengoMan
 
         private void CreateObjectFactory()
         {
+
             StreamReader sr = new StreamReader(@"Level1.txt");
             int row = 0;
             while (!sr.EndOfStream)

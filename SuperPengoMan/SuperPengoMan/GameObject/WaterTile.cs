@@ -14,9 +14,9 @@ namespace SuperPengoMan.GameObject
 
         }
 
-        public void Update()
+        public void Update(float speedX)
         {
-            pos.X -= 0.3f;
+            pos.X += speedX;
         }
     }
 }
