@@ -73,16 +73,8 @@ namespace SuperPengoMan
                 {
                     pengo.HandleCollision(iceTile);
                 }
-                iceTile.Update();
+                
             }
-            foreach (WaterTile waterTile in watertile)
-            {
-                waterTile.Update();
-            }
-            //if (pengo.posX > 450)
-            //{
-            //    pos -= 2;
-            //}
 
             base.Update(gameTime);
         }
