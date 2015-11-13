@@ -87,8 +87,18 @@ namespace SuperPengoMan
                 }
                 
             }
+            foreach (Trap spike in trap)
+            {
+                if (spike.PixelCollition(pengo))
+                {
+                    pengo.KillPengo(pengoRespawnPos);
+                }
+            }
             backgrounds.Update();
-            pengo.KillPengo(pengoRespawnPos);
+            if (pengo.pos.Y >= TILE_SIZE * 14)
+            {
+                pengo.KillPengo(pengoRespawnPos);
+            }
             camera.Update(pengo.pos);
             base.Update(gameTime);
         }

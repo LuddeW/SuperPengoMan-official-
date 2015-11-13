@@ -25,7 +25,7 @@ namespace SuperPengoMan.GameObject
         private bool isOnGround = false;
         private Vector2 speed;
         private int windowY;
-        private Rectangle hitbox;
+        public Rectangle hitbox;
         private bool moving = false;
         private SpriteEffects spriteFx = SpriteEffects.None;
         
@@ -221,11 +221,8 @@ namespace SuperPengoMan.GameObject
         }
 
         public void KillPengo(Vector2 pengoRespawnPos)
-        {
-            if (pos.Y >= Game1.TILE_SIZE * 14)
-            {
-                pos = pengoRespawnPos;
-            }
+        {         
+            pos = pengoRespawnPos;
         }
     }
 }
