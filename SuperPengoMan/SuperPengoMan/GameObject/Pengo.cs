@@ -105,13 +105,14 @@ namespace SuperPengoMan.GameObject
                     speed.X = 0;
                     if (currentSprite == SpriteShow.slide)
                     {
-                        hitbox.X = (int)pos.X + 4;
+                        speed.X = 0;
+                        hitbox.X = hitbox.X + 4;
                     }
                     else
                     {
-                        hitbox.X = (int)pos.X + 2;
-                    }
-                    hitbox.X = hitbox.X +2;
+                        speed.X = 0;
+                        hitbox.X = hitbox.X + 2;
+                    }                   
                     pos.X = hitbox.X;
                     break;
                 case HitState.none:
