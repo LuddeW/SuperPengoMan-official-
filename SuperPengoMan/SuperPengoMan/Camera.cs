@@ -29,9 +29,9 @@ namespace SuperPengoMan
             {
                 position.X = 0;
             }
-            else if (position.X > Game1.TILE_SIZE * 34 - ScreenWidth)
+            else if (position.X > Game1.TILE_SIZE * 49 - ScreenWidth)
             {
-                position.X = Game1.TILE_SIZE * 34 - ScreenWidth;
+                position.X = Game1.TILE_SIZE * 49 - ScreenWidth;
             }
 
             viewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));

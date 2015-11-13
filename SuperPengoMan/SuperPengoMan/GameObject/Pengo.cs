@@ -133,13 +133,13 @@ namespace SuperPengoMan.GameObject
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 currentSprite = SpriteShow.jump;
             }
-            if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.Down))
+            if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.D))
             {
                 speed.X = +2;
                 moving = true;
                 spriteFx = SpriteEffects.None;
             }
-            if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.Down))
+            if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.D))
             {
                 speed.X = -2;
                 moving = true;
@@ -152,19 +152,19 @@ namespace SuperPengoMan.GameObject
                 currentSprite = SpriteShow.jump;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (keyState.IsKeyDown(Keys.Down) && isOnGround)
+            if (keyState.IsKeyDown(Keys.D) && isOnGround)
             {              
                 currentSprite = SpriteShow.slide;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Right) && isOnGround)
+            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Right) && isOnGround)
             {
                 speed.X = +4;
                 currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.None;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (keyState.IsKeyDown(Keys.Down) && keyState.IsKeyDown(Keys.Left) && isOnGround)
+            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Left) && isOnGround)
             {
                 speed.X = - 4;
                 currentSprite = SpriteShow.slide;
