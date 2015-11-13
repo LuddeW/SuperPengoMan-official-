@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Background.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Game1.cs" />
@@ -58,10 +59,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\background.png" />
+    <Content Include="Content\big_cloud.png" />
+    <Content Include="Content\cloud.png" />
     <Content Include="Content\ice_tile.png" />
     <Content Include="Content\penguin_glide.png" />
     <Content Include="Content\penguin_jump.png" />
     <Content Include="Content\penguin_spritesheet.png" />
+    <Content Include="Content\snowcave.png" />
     <Content Include="Content\spike.png" />
     <Content Include="Content\water_tile.png" />
     <Content Include="Icon.ico" />

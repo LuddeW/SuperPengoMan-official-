@@ -20,8 +20,11 @@ namespace SuperPengoMan
         Texture2D penguin_glide;
         Texture2D iceTile;
         Texture2D background;
+        Texture2D caveBackground;
         Texture2D waterTile;
         Texture2D spike;
+
+        Background backgrounds;
 
         Vector2 pengoRespawnPos;
 
@@ -57,8 +60,10 @@ namespace SuperPengoMan
             penguin_glide = Content.Load<Texture2D>(@"penguin_glide");
             iceTile = Content.Load<Texture2D>(@"ice_tile");
             background = Content.Load<Texture2D>(@"background");
+            caveBackground = Content.Load<Texture2D>(@"snowcave");
             waterTile = Content.Load<Texture2D>(@"water_tile");
             spike = Content.Load<Texture2D>(@"spike");
+            backgrounds = new Background(Content, Window);
             CreateObjectFactory();
             camera = new Camera();
         }
@@ -82,6 +87,7 @@ namespace SuperPengoMan
                 }
                 
             }
+            backgrounds.Update();
             pengo.KillPengo(pengoRespawnPos);
             camera.Update(pengo.pos);
             base.Update(gameTime);
@@ -130,7 +136,9 @@ namespace SuperPengoMan
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix);
-            spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (2 * TILE_SIZE), background.Width, background.Height), Color.White);
+            spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (1 * TILE_SIZE), background.Width, background.Height), Color.White);
+            spriteBatch.Draw(caveBackground, new Vector2(TILE_SIZE * 37, TILE_SIZE * 9), Color.White);
+            backgrounds.Draw(spriteBatch);
             pengo.Draw(spriteBatch);
             foreach (FloorTile iceTile in floortile)
             {
