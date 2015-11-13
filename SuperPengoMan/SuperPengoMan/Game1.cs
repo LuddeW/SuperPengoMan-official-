@@ -21,11 +21,13 @@ namespace SuperPengoMan
         Texture2D iceTile;
         Texture2D background;
         Texture2D waterTile;
+        Texture2D spike;
 
         Vector2 pengoRespawnPos;
 
         List<FloorTile> floortile = new List<FloorTile>();
         List<WaterTile> watertile = new List<WaterTile>();
+        List<Trap> trap = new List<Trap>();
 
         Pengo pengo;
         Camera camera;
@@ -56,6 +58,7 @@ namespace SuperPengoMan
             iceTile = Content.Load<Texture2D>(@"ice_tile");
             background = Content.Load<Texture2D>(@"background");
             waterTile = Content.Load<Texture2D>(@"water_tile");
+            spike = Content.Load<Texture2D>(@"spike");
             CreateObjectFactory();
             camera = new Camera();
         }
@@ -116,6 +119,9 @@ namespace SuperPengoMan
                 case 'W':
                     watertile.Add(new WaterTile(waterTile, pos));
                     break;
+                case 'T':
+                    trap.Add(new Trap(spike, pos));
+                    break;
 
             }
         }
@@ -133,7 +139,11 @@ namespace SuperPengoMan
             foreach (WaterTile waterTile in watertile)
             {
                 waterTile.Draw(spriteBatch);
-            }    
+            }
+            foreach (Trap spike in trap)
+            {
+                spike.Draw(spriteBatch);
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }
