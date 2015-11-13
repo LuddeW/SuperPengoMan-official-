@@ -42,6 +42,5 @@ namespace SuperPengoMan.GameObject
             }
             return false;
         }
-
     }
 }

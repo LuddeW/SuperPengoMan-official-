@@ -23,6 +23,7 @@ namespace SuperPengoMan
         Texture2D caveBackground;
         Texture2D waterTile;
         Texture2D spike;
+        Texture2D snowball;
 
         Background backgrounds;
 
@@ -33,6 +34,7 @@ namespace SuperPengoMan
         List<Trap> trap = new List<Trap>();
 
         Pengo pengo;
+        Enemy enemy;
         Camera camera;
 
         public Game1()
@@ -63,6 +65,7 @@ namespace SuperPengoMan
             caveBackground = Content.Load<Texture2D>(@"snowcave");
             waterTile = Content.Load<Texture2D>(@"water_tile");
             spike = Content.Load<Texture2D>(@"spike");
+            snowball = Content.Load<Texture2D>(@"snowball");
             backgrounds = new Background(Content, Window);
             CreateObjectFactory();
             camera = new Camera();
@@ -79,6 +82,7 @@ namespace SuperPengoMan
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             pengo.Update();
+            enemy.Update();
             foreach (FloorTile iceTile in floortile)
             {
                 if (pengo.IsColliding(iceTile))
@@ -138,6 +142,9 @@ namespace SuperPengoMan
                 case 'T':
                     trap.Add(new Trap(spike, pos));
                     break;
+                case 'E':
+                    enemy = new Enemy(snowball, pos);
+                    break;
 
             }
         }
@@ -149,6 +156,7 @@ namespace SuperPengoMan
             spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (1 * TILE_SIZE), background.Width, background.Height), Color.White);
             spriteBatch.Draw(caveBackground, new Vector2(TILE_SIZE * 37, TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
+            enemy.Draw(spriteBatch);
             pengo.Draw(spriteBatch);
             foreach (FloorTile iceTile in floortile)
             {

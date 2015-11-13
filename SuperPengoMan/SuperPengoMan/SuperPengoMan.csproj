@@ -42,6 +42,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObject\Enemy.cs" />
     <Compile Include="GameObject\FloorTile.cs" />
     <Compile Include="GameObject\GameObject.cs" />
     <Compile Include="GameObject\Pengo.cs" />
@@ -65,6 +66,7 @@
     <Content Include="Content\penguin_glide.png" />
     <Content Include="Content\penguin_jump.png" />
     <Content Include="Content\penguin_spritesheet.png" />
+    <Content Include="Content\snowball.png" />
     <Content Include="Content\snowcave.png" />
     <Content Include="Content\spike.png" />
     <Content Include="Content\water_tile.png" />
