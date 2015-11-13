@@ -22,6 +22,8 @@ namespace SuperPengoMan
         Texture2D background;
         Texture2D waterTile;
 
+        Vector2 pengoRespawnPos;
+
         List<FloorTile> floortile = new List<FloorTile>();
         List<WaterTile> watertile = new List<WaterTile>();
 
@@ -77,6 +79,7 @@ namespace SuperPengoMan
                 }
                 
             }
+            pengo.KillPengo(pengoRespawnPos);
             camera.Update(pengo.pos);
             base.Update(gameTime);
         }
@@ -107,6 +110,7 @@ namespace SuperPengoMan
                     floortile.Add(new FloorTile(iceTile, pos));
                     break;
                 case 'S':
+                    pengoRespawnPos = pos;
                     pengo = new Pengo(penguin, penguin_glide, penguin_jump, pos);
                     break;
                 case 'W':

@@ -218,5 +218,13 @@ namespace SuperPengoMan.GameObject
             }
             return pengoAnimation;
         }
+
+        public void KillPengo(Vector2 pengoRespawnPos)
+        {
+            if (pos.Y >= Game1.TILE_SIZE * 14)
+            {
+                pos = pengoRespawnPos;
+            }
+        }
     }
 }
