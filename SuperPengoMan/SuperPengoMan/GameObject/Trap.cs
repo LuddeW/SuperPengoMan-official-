@@ -9,9 +9,11 @@ namespace SuperPengoMan.GameObject
 {
     class Trap:GameObject
     {
+        private readonly bool rotated;
         Rectangle hitbox;
-        public Trap(Texture2D texture, Vector2 pos) : base(texture, pos)
+        public Trap(Texture2D texture, Vector2 pos, bool rotated = false) : base(texture, pos)
         {
+            this.rotated = rotated;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
         }
 
@@ -31,8 +33,17 @@ namespace SuperPengoMan.GameObject
             {
                 for (int x = left; x < right; x++)
                 {
-                    Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
+                    Color colorA;
                     Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
+                    if (!rotated)
+                    {
+                        colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
+                    }
+                    else
+                    {
+                        colorA = dataA[((Game1.TILE_SIZE - 1) - (x - hitbox.Left)) + 
+                                                    ((Game1.TILE_SIZE - 1) - (y - hitbox.Top)) * hitbox.Width];
+                    }
 
                     if (colorA.A !=0 && colorB.A !=0)
                     {
@@ -42,5 +53,22 @@ namespace SuperPengoMan.GameObject
             }
             return false;
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+
+            if (!rotated)
+            {
+                spriteBatch.Draw(texture, pos, Color.White);
+            }
+            else
+            {
+                float rotation = MathHelper.ToRadians(180);
+                spriteBatch.Draw(texture, pos, new Rectangle(0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE),
+                    Color.White, rotation, new Vector2(Game1.TILE_SIZE, Game1.TILE_SIZE), 1f, SpriteEffects.None, 1f);
+
+            }
+        }
+
     }
 }

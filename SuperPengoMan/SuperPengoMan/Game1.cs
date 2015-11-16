@@ -12,6 +12,8 @@ namespace SuperPengoMan
     {
         public const int TILE_SIZE = 40;
 
+        int currentLevelWidth = 0;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -43,7 +45,13 @@ namespace SuperPengoMan
             Content.RootDirectory = "Content";
         }
 
-       
+        public int CurrentLevelWidth
+        {
+            get { return currentLevelWidth; }
+            set { currentLevelWidth = value; }
+        }
+
+
         protected override void Initialize()
         {
 
@@ -69,6 +77,7 @@ namespace SuperPengoMan
             backgrounds = new Background(Content, Window);
             CreateObjectFactory();
             camera = new Camera();
+            camera.LevelWidth = CurrentLevelWidth;
         }
 
         
@@ -111,17 +120,23 @@ namespace SuperPengoMan
 
         private void CreateObjectFactory()
         {
-            StreamReader sr = new StreamReader(@"Level1.txt");
+            StreamReader sr = new StreamReader(@"../../../Content/Level1.txt");
             int row = 0;
+            int maxCol = 0;
             while (!sr.EndOfStream)
             {
                 string objectStr = sr.ReadLine();
                 for (int col = 0; col < objectStr.Length; col++)
                 {
                     ObjectFactory(objectStr[col], row, col);
+                    if (col > maxCol)
+                    {
+                        maxCol = col;
+                    }
                 }
                 row++;
             }
+            CurrentLevelWidth = TILE_SIZE*maxCol;
         }
 
         private void ObjectFactory(char objectChar, int row, int col)
@@ -141,6 +156,9 @@ namespace SuperPengoMan
                     break;
                 case 'T':
                     trap.Add(new Trap(spike, pos));
+                    break;
+                case 't':
+                    trap.Add(new Trap(spike, pos, true));
                     break;
                 case 'E':
                     enemy = new Enemy(snowball, pos);

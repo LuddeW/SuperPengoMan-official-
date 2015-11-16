@@ -63,6 +63,7 @@
     <Content Include="Content\big_cloud.png" />
     <Content Include="Content\cloud.png" />
     <Content Include="Content\ice_tile.png" />
+    <Content Include="Content\Level1.txt" />
     <Content Include="Content\penguin_glide.png" />
     <Content Include="Content\penguin_jump.png" />
     <Content Include="Content\penguin_spritesheet.png" />

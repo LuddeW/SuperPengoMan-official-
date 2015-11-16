@@ -10,6 +10,7 @@ namespace SuperPengoMan
     {
         Vector2 position;
         Matrix viewMatrix;
+        int levelWidth = 0;
         public Matrix ViewMatrix
         {
             get { return viewMatrix;}
@@ -18,6 +19,12 @@ namespace SuperPengoMan
         public int ScreenWidth
         {
             get { return Game1.TILE_SIZE * 15; }
+        }
+
+        public int LevelWidth
+        {
+            get { return levelWidth; }
+            set { levelWidth = value; }
         }
 
         public void Update(Vector2 pengoPos)
@@ -29,9 +36,9 @@ namespace SuperPengoMan
             {
                 position.X = 0;
             }
-            else if (position.X > Game1.TILE_SIZE * 49 - ScreenWidth)
+            else if (position.X > LevelWidth - ScreenWidth)
             {
-                position.X = Game1.TILE_SIZE * 49 - ScreenWidth;
+                position.X = LevelWidth - ScreenWidth;
             }
 
             viewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));
