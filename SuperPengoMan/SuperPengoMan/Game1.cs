@@ -15,32 +15,15 @@ namespace SuperPengoMan
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D penguin;
-        Texture2D penguin_jump;
-        Texture2D penguin_glide;
-        Texture2D iceTile;
-        Texture2D background;
-        Texture2D caveBackground;
-        Texture2D waterTile;
-        Texture2D spike;
-        Texture2D snowball;
+        HandleGame handlegame;
 
-        Background backgrounds;
-
-        Vector2 pengoRespawnPos;
-
-        List<FloorTile> floortile = new List<FloorTile>();
-        List<WaterTile> watertile = new List<WaterTile>();
-        List<Trap> trap = new List<Trap>();
-
-        Pengo pengo;
-        Enemy enemy;
         Camera camera;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            handlegame = new HandleGame(this);
         }
 
        
@@ -55,19 +38,9 @@ namespace SuperPengoMan
 
         protected override void LoadContent()
         {
-            
+            handlegame.LoadContent();
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            penguin = Content.Load<Texture2D>(@"penguin_spritesheet");
-            penguin_jump = Content.Load<Texture2D>(@"penguin_jump");
-            penguin_glide = Content.Load<Texture2D>(@"penguin_glide");
-            iceTile = Content.Load<Texture2D>(@"ice_tile");
-            background = Content.Load<Texture2D>(@"background");
-            caveBackground = Content.Load<Texture2D>(@"snowcave");
-            waterTile = Content.Load<Texture2D>(@"water_tile");
-            spike = Content.Load<Texture2D>(@"spike");
-            snowball = Content.Load<Texture2D>(@"snowball");
-            backgrounds = new Background(Content, Window);
-            CreateObjectFactory();
+            
             camera = new Camera();
         }
 
@@ -79,97 +52,16 @@ namespace SuperPengoMan
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-            pengo.Update();
-            enemy.Update();
-            foreach (FloorTile iceTile in floortile)
-            {
-                if (pengo.IsColliding(iceTile))
-                {
-                    pengo.HandleCollision(iceTile);
-                }
-                
-            }
-            foreach (Trap spike in trap)
-            {
-                if (spike.PixelCollition(pengo))
-                {
-                    pengo.KillPengo(pengoRespawnPos);
-                }
-            }
-            backgrounds.Update();
-            if (pengo.pos.Y >= TILE_SIZE * 14)
-            {
-                pengo.KillPengo(pengoRespawnPos);
-            }
-            camera.Update(pengo.pos);
+            handlegame.Update();
+            camera.Update(handlegame.GetPengoPos());
             base.Update(gameTime);
         }
-
-
-
-        private void CreateObjectFactory()
-        {
-            StreamReader sr = new StreamReader(@"Level1.txt");
-            int row = 0;
-            while (!sr.EndOfStream)
-            {
-                string objectStr = sr.ReadLine();
-                for (int col = 0; col < objectStr.Length; col++)
-                {
-                    ObjectFactory(objectStr[col], row, col);
-                }
-                row++;
-            }
-        }
-
-        private void ObjectFactory(char objectChar, int row, int col)
-        {
-            Vector2 pos = new Vector2(TILE_SIZE * col, TILE_SIZE * row);
-            switch (objectChar)
-            {
-                case 'F':
-                    floortile.Add(new FloorTile(iceTile, pos));
-                    break;
-                case 'S':
-                    pengoRespawnPos = pos;
-                    pengo = new Pengo(penguin, penguin_glide, penguin_jump, pos);
-                    break;
-                case 'W':
-                    watertile.Add(new WaterTile(waterTile, pos));
-                    break;
-                case 'T':
-                    trap.Add(new Trap(spike, pos));
-                    break;
-                case 'E':
-                    enemy = new Enemy(snowball, pos);
-                    break;
-
-            }
-        }
-
+        
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.ViewMatrix);
-            spriteBatch.Draw(background, new Rectangle(0, Window.ClientBounds.Height - background.Height - (1 * TILE_SIZE), background.Width, background.Height), Color.White);
-            spriteBatch.Draw(caveBackground, new Vector2(TILE_SIZE * 37, TILE_SIZE * 9), Color.White);
-            backgrounds.Draw(spriteBatch);
-            enemy.Draw(spriteBatch);
-            pengo.Draw(spriteBatch);
-            foreach (FloorTile iceTile in floortile)
-            {
-                iceTile.Draw(spriteBatch);
-            }
-            foreach (WaterTile waterTile in watertile)
-            {
-                waterTile.Draw(spriteBatch);
-            }
-            foreach (Trap spike in trap)
-            {
-                spike.Draw(spriteBatch);
-            }
+            handlegame.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }
