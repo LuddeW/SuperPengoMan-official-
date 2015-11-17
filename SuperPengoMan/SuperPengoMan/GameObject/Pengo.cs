@@ -37,12 +37,12 @@ namespace SuperPengoMan.GameObject
             this.jump = jump;
             speed = new Vector2(1, 1);
             windowY = Game1.TILE_SIZE * 15;
-            
+            hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
         }
 
         public void Update()
         {
-            hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            
             if (pos.X < 0)
             {
                 pos.X = 0;

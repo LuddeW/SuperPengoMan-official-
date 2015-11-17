@@ -26,7 +26,7 @@ namespace SuperPengoMan.GameObject
         
         public void Update()
         {
-            hitbox = new Rectangle((int)pos.X, (int)pos.Y -1, Game1.TILE_SIZE, texture.Height);
+            hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, texture.Height);
             clock.AddTime(0.03f);
             Animate();
             pos.X += speed;
