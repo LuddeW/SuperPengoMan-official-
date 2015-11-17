@@ -121,23 +121,23 @@ namespace SuperPengoMan
 
         private void CreateObjectFactory()
         {
-            StreamReader sr = new StreamReader(@"Level1.txt");
-            int row = 0;
-            while (!sr.EndOfStream)
+            LevelReader lr = new LevelReader(@"MenuLevel.txt");
+
+            List<Level> levels = lr.ReadFile();
+
+            for (int row = 0; row < levels[0].Rows; row++)
             {
-                string objectStr = sr.ReadLine();
-                for (int col = 0; col < objectStr.Length; col++)
+                for (int col = 0; col < levels[0].Cols; col++)
                 {
-                    ObjectFactory(objectStr[col], row, col);
+                    ObjectFactory(levels[0].Get(row,col).GameObject, levels[0].Get(row, col).Option, row, col);
                 }
-                row++;
             }
         }
 
-        private void ObjectFactory(char objectChar, int row, int col)
+        private void ObjectFactory(char gameObject, char option, int row, int col)
         {
             Vector2 pos = new Vector2(Game1.TILE_SIZE * col, Game1.TILE_SIZE * row);
-            switch (objectChar)
+            switch (gameObject)
             {
                 case 'F':
                     floortile.Add(new FloorTile(iceTile, pos));

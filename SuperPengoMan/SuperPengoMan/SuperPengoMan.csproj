@@ -52,6 +52,9 @@
     <Compile Include="HandleGame.cs" />
     <Compile Include="Level1.cs" />
     <Compile Include="MenuLevel.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="LevelItem.cs" />
+    <Compile Include="LevelReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
