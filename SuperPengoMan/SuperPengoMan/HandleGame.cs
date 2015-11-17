@@ -71,7 +71,10 @@ namespace SuperPengoMan
                 {
                     pengo.HandleCollision(iceTile);
                 }
-
+                if (enemy.IsColliding(iceTile))
+                {
+                    enemy.HandleCollision();
+                }
             }
             foreach (Trap spike in trap)
             {
@@ -81,6 +84,10 @@ namespace SuperPengoMan
                 }
             }
             backgrounds.Update();
+            if (enemy.PixelCollition(pengo))
+            {
+                pengo.KillPengo(pengoRespawnPos);
+            }
             if (pengo.pos.Y >= Game1.TILE_SIZE * 14)
             {
                 pengo.KillPengo(pengoRespawnPos);
