@@ -23,6 +23,8 @@ namespace SuperPengoMan
         Texture2D waterTile;
         Texture2D spike;
         Texture2D snowball;
+        Texture2D ladderTile;
+        Texture2D penguin_climb;
 
         Background backgrounds;
 
@@ -31,6 +33,7 @@ namespace SuperPengoMan
         List<FloorTile> floortile = new List<FloorTile>();
         List<WaterTile> watertile = new List<WaterTile>();
         List<Trap> trap = new List<Trap>();
+        List<Ladder> ladder = new List<Ladder>();
 
         Pengo pengo;
         Enemy enemy;
@@ -48,12 +51,14 @@ namespace SuperPengoMan
             penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
             penguin_jump = game.Content.Load<Texture2D>(@"penguin_jump");
             penguin_glide = game.Content.Load<Texture2D>(@"penguin_glide");
+            penguin_climb = game.Content.Load<Texture2D>(@"penguin_climb");
             iceTile = game.Content.Load<Texture2D>(@"ice_tile");
             background = game.Content.Load<Texture2D>(@"background");
             caveBackground = game.Content.Load<Texture2D>(@"snowcave");
             waterTile = game.Content.Load<Texture2D>(@"water_tile");
             spike = game.Content.Load<Texture2D>(@"spike");
             snowball = game.Content.Load<Texture2D>(@"snowball");
+            ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
             CreateObjectFactory();
             camera = new Camera();
@@ -81,6 +86,13 @@ namespace SuperPengoMan
                 if (spike.PixelCollition(pengo))
                 {
                     pengo.KillPengo(pengoRespawnPos);
+                }
+            }
+            foreach (Ladder ladderTile in ladder)
+            {
+                if (ladderTile.hitbox.Intersects(pengo.hitbox))
+                {
+                    pengo.isOnLadder = true;
                 }
             }
             backgrounds.Update();
@@ -123,7 +135,7 @@ namespace SuperPengoMan
                     break;
                 case 'S':
                     pengoRespawnPos = pos;
-                    pengo = new Pengo(penguin, penguin_glide, penguin_jump, pos);
+                    pengo = new Pengo(penguin, penguin_glide, penguin_jump, penguin_climb, pos);
                     break;
                 case 'W':
                     watertile.Add(new WaterTile(waterTile, pos));
@@ -133,6 +145,9 @@ namespace SuperPengoMan
                     break;
                 case 'E':
                     enemy = new Enemy(snowball, pos);
+                    break;
+                case 'L':
+                    ladder.Add(new Ladder(ladderTile, pos));
                     break;
 
             }
@@ -148,6 +163,10 @@ namespace SuperPengoMan
             spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
             spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
+            foreach (Ladder ladderTile in ladder)
+            {
+                ladderTile.Draw(spriteBatch);
+            }
             enemy.Draw(spriteBatch);
             pengo.Draw(spriteBatch);
             foreach (FloorTile iceTile in floortile)
@@ -162,8 +181,6 @@ namespace SuperPengoMan
             {
                 spike.Draw(spriteBatch);
             }
-           
-            
         }
     }
 }
