@@ -24,7 +24,7 @@ namespace SuperPengoMan.GameObject
         private SpriteShow currentSprite = SpriteShow.hor;
         private int pengoAnimation = 0;
         private bool isOnGround = false;
-        private Vector2 speed;
+        public Vector2 speed;
         private int windowY;
         public Rectangle hitbox;
         private bool moving = false;

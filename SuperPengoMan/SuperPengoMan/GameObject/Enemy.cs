@@ -15,6 +15,7 @@ namespace SuperPengoMan.GameObject
         HitState currentHitState = HitState.none;
 
         public Rectangle hitbox;
+        public Rectangle topHitbox;
         Rectangle srcRect;
         int speed = -1;
 
@@ -27,11 +28,10 @@ namespace SuperPengoMan.GameObject
         public void Update()
         {
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, texture.Height);
+            topHitbox = new Rectangle((int)pos.X + 5, (int)pos.Y-5, Game1.TILE_SIZE - 10, 5);
             clock.AddTime(0.03f);
             Animate();
             pos.X += speed;
-            Console.WriteLine(pos);
-            Console.WriteLine(speed);    
         }
 
         public bool IsColliding(FloorTile floorTile)
@@ -91,32 +91,32 @@ namespace SuperPengoMan.GameObject
             return animate;
         }
 
-        public bool PixelCollition(Pengo pengo)
-        {
-            Color[] dataA = new Color[texture.Width * texture.Height];
-            texture.GetData(dataA);
-            Color[] dataB = new Color[pengo.texture.Width * pengo.texture.Height];
-            pengo.texture.GetData(dataB);
+        //public bool PixelCollition(Pengo pengo)
+        //{
+        //    Color[] dataA = new Color[texture.Width * texture.Height];
+        //    texture.GetData(dataA);
+        //    Color[] dataB = new Color[pengo.texture.Width * pengo.texture.Height];
+        //    pengo.texture.GetData(dataB);
 
-            int top = Math.Max(hitbox.Top, pengo.hitbox.Top);
-            int bottom = Math.Min(hitbox.Bottom, pengo.hitbox.Bottom);
-            int left = Math.Max(hitbox.Left, pengo.hitbox.Left);
-            int right = Math.Min(hitbox.Right, pengo.hitbox.Right);
+        //    int top = Math.Max(hitbox.Top, pengo.hitbox.Top);
+        //    int bottom = Math.Min(hitbox.Bottom, pengo.hitbox.Bottom);
+        //    int left = Math.Max(hitbox.Left, pengo.hitbox.Left);
+        //    int right = Math.Min(hitbox.Right, pengo.hitbox.Right);
 
-            for (int y = top; y < bottom; y++)
-            {
-                for (int x = left; x < right; x++)
-                {
-                    Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-                    Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
+        //    for (int y = top; y < bottom; y++)
+        //    {
+        //        for (int x = left; x < right; x++)
+        //        {
+        //            Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
+        //            Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
 
-                    if (colorA.A != 0 && colorB.A != 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        //            if (colorA.A != 0 && colorB.A != 0)
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }

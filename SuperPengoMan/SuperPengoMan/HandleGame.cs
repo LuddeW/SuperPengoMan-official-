@@ -96,9 +96,14 @@ namespace SuperPengoMan
                 }
             }
             backgrounds.Update();
-            if (enemy.PixelCollition(pengo))
+            
+            if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
             {
                 pengo.KillPengo(pengoRespawnPos);
+            }
+            else if (enemy.topHitbox.Intersects(pengo.hitbox))
+            {
+                Console.WriteLine("You killed it");
             }
             if (pengo.pos.Y >= Game1.TILE_SIZE * 14)
             {
