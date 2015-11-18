@@ -60,7 +60,7 @@ namespace SuperPengoMan
                 levelItemRows[row].Add(new LevelItem());
             }
             levelItemRows[row][col].GameObject = gameObject;
-            levelItemRows[row][col].Option = option;
+            levelItemRows[row][col].Option = option == '%' ? '0' : option;
         }
 
         public LevelItem Get(int row, int col)
