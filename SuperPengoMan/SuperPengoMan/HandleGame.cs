@@ -39,15 +39,18 @@ namespace SuperPengoMan
         Enemy enemy;
         Camera camera;
 
+        //MenuLevel menuLevel;
+
         public HandleGame(Game game)
         {
             this.game = game;
+            //menuLevel = new MenuLevel(game);
         }
        
         public void LoadContent()
         {
 
-            
+
             penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
             penguin_jump = game.Content.Load<Texture2D>(@"penguin_jump");
             penguin_glide = game.Content.Load<Texture2D>(@"penguin_glide");
@@ -61,6 +64,7 @@ namespace SuperPengoMan
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
             CreateObjectFactory();
+           
             camera = new Camera();
         }
 
@@ -164,7 +168,8 @@ namespace SuperPengoMan
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {   
+        {
+
             spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
             spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
