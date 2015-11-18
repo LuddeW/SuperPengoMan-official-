@@ -112,7 +112,7 @@ namespace SuperPengoMan
 
         private void CreateObjectFactory()
         {
-            StreamReader sr = new StreamReader(@"MenuLevel.txt");
+            StreamReader sr = new StreamReader(@"Level1.txt");
             int row = 0;
             while (!sr.EndOfStream)
             {
