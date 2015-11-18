@@ -10,7 +10,7 @@ namespace SuperPengoMan.GameObject
 {
     class Pengo:GameObject
     {
-        private Rectangle srcRect;
+        public Rectangle srcRect;
         private Clock clock;
 
         private Texture2D glide;

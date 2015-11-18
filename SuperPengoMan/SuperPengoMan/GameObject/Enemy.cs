@@ -90,33 +90,5 @@ namespace SuperPengoMan.GameObject
             }
             return animate;
         }
-
-        //public bool PixelCollition(Pengo pengo)
-        //{
-        //    Color[] dataA = new Color[texture.Width * texture.Height];
-        //    texture.GetData(dataA);
-        //    Color[] dataB = new Color[pengo.texture.Width * pengo.texture.Height];
-        //    pengo.texture.GetData(dataB);
-
-        //    int top = Math.Max(hitbox.Top, pengo.hitbox.Top);
-        //    int bottom = Math.Min(hitbox.Bottom, pengo.hitbox.Bottom);
-        //    int left = Math.Max(hitbox.Left, pengo.hitbox.Left);
-        //    int right = Math.Min(hitbox.Right, pengo.hitbox.Right);
-
-        //    for (int y = top; y < bottom; y++)
-        //    {
-        //        for (int x = left; x < right; x++)
-        //        {
-        //            Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-        //            Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
-
-        //            if (colorA.A != 0 && colorB.A != 0)
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //    }
-        //    return false;
-        //}
     }
 }

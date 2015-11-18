@@ -31,10 +31,12 @@ namespace SuperPengoMan.GameObject
             {
                 for (int x = left; x < right; x++)
                 {
-                    Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-                    Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
+                    Color colorA = dataA[texture.Width * (y - hitbox.Y) + x - hitbox.X];
+                    //Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
+                    Color colorB = dataB[pengo.texture.Width / 4 * (y - pengo.hitbox.Y + pengo.srcRect.Y) + x - pengo.hitbox.X + pengo.srcRect.X];
+                    //Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
 
-                    if (colorA.A !=0 && colorB.A !=0)
+                    if (colorA.A + colorB.A > 256)
                     {
                         return true;
                     }
