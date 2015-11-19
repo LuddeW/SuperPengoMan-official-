@@ -77,5 +77,20 @@ namespace SuperPengoMan
         {
             get { return levelItemRows[0].Count; }
         }
+
+        public void WriteLevel(StreamWriter sw)
+        {
+            foreach (var levelRow in levelItemRows)
+            {
+                char[] buf = new char[levelRow.Count*2];
+                int ix = 0;
+                foreach (var levelItem in levelRow)
+                {
+                    buf[ix++] = levelItem.GameObject;
+                    buf[ix++] = levelItem.Option;
+                }
+                sw.WriteLine(buf);
+            }
+        }
     }
 }

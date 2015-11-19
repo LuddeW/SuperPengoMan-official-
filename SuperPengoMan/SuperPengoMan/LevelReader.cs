@@ -9,10 +9,12 @@ namespace SuperPengoMan
     class LevelReader
     {
         String levelFilename;
+        List<Level> levels;
 
         public LevelReader(string levelFilename)
         {
             this.levelFilename = levelFilename;
+            levels = ReadFile();
         }
 
         public List<Level> ReadFile()
@@ -31,7 +33,36 @@ namespace SuperPengoMan
                 }
                 level = new Level();
             }
+            sr.Close();
             return result;
+        }
+
+        public Level this[int ix] => levels[ix];
+
+        public int Count => levels.Count;
+
+        public void Add(Level level)
+        {
+            if (level != null)
+            {
+                levels.Add(level);
+            }
+        }
+
+        public void WriteFile()
+        {
+            WriteFile(levelFilename);
+        }
+
+        public void WriteFile(String fileName)
+        {
+            StreamWriter sw = new StreamWriter(fileName);
+            foreach (Level level in levels)
+            {
+                level.WriteLevel(sw);
+                sw.WriteLine();
+            }
+            sw.Close();
         }
     }
 }

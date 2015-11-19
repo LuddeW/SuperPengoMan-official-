@@ -46,7 +46,13 @@ namespace SuperPengoMan
             this.game = game;
             //menuLevel = new MenuLevel(game);
         }
-       
+
+        public Camera PengoCamera
+        {
+            get { return camera; }
+            set { camera = value; }
+        }
+
         public void LoadContent()
         {
 
@@ -63,7 +69,6 @@ namespace SuperPengoMan
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
-            CreateObjectFactory();
            
             camera = new Camera();
         }
@@ -119,17 +124,13 @@ namespace SuperPengoMan
 
 
 
-        private void CreateObjectFactory()
+        public void CreateLevel(Level level)
         {
-            LevelReader lr = new LevelReader(@"MenuLevel.txt");
-
-            List<Level> levels = lr.ReadFile();
-
-            for (int row = 0; row < levels[0].Rows; row++)
+            for (int row = 0; row < level.Rows; row++)
             {
-                for (int col = 0; col < levels[0].Cols; col++)
+                for (int col = 0; col < level.Cols; col++)
                 {
-                    ObjectFactory(levels[0].Get(row,col).GameObject, levels[0].Get(row, col).Option, row, col);
+                    ObjectFactory(level.Get(row,col).GameObject, level.Get(row, col).Option, row, col);
                 }
             }
         }

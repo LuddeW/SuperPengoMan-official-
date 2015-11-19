@@ -58,10 +58,10 @@ namespace SuperPengoMan
             //snowball = game.Content.Load<Texture2D>(@"snowball");
             //ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             //backgrounds = new Background(game.Content, game.Window);
-            //CreateObjectFactory();
+            //CreateLevel();
         //}
 
-        //private void CreateObjectFactory()
+        //private void CreateLevel()
         //{
         //    StreamReader sr = new StreamReader(@"MenuLevel.txt");
         //    int row = 0;
