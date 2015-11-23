@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using SuperPengoMan.GameObject;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace SuperPengoMan
 {
@@ -20,6 +16,7 @@ namespace SuperPengoMan
         private SpriteBatch spriteBatch;
 
         private HandleGame handlegame;
+        private LevelEditor levelEditor;
         private enum GameState { Setup, StartMenu, HighScore, GameScreen, LevelEditor, EndGame }
         private GameState currentGameState = GameState.Setup;
         private GameState nextGameStateState = GameState.StartMenu;
@@ -49,9 +46,10 @@ namespace SuperPengoMan
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            levelEditor = new LevelEditor(this, levelsLevelReader);
         }
 
-        
+
         protected override void UnloadContent()
         {
            
@@ -73,7 +71,7 @@ namespace SuperPengoMan
                     handlegame.Update();
                     break;
                 case GameState.LevelEditor:
-
+                    levelEditor.Update();
                     break;
                 case GameState.EndGame:
                     nextGameStateState = GameState.StartMenu;
@@ -94,7 +92,7 @@ namespace SuperPengoMan
                     break;
 
                 case GameState.HighScore:
-                    Debug.WriteLine("LevelEditor");
+                    Debug.WriteLine("HighScore");
                     break;
 
                 case GameState.GameScreen:
@@ -103,7 +101,9 @@ namespace SuperPengoMan
                     spriteBatch.End();
                     break;
                 case GameState.LevelEditor:
-                    Debug.WriteLine("LevelEditor");
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, levelEditor.EditorCamera.ViewMatrix);
+                    levelEditor.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
                 case GameState.EndGame:
                     Debug.WriteLine("EndGame");
@@ -129,6 +129,7 @@ namespace SuperPengoMan
                         StartHandleGame(levelsLevelReader[currentLevel]);
                         break;
                     case GameState.LevelEditor:
+                        levelEditor.InitEditor();
                         break;
                     case GameState.EndGame:
                         break;
@@ -151,9 +152,17 @@ namespace SuperPengoMan
 
         private void HandleMenuOption(char menuOption)
         {
-            if (menuOption == '0')
+            switch (menuOption)
             {
-                nextGameStateState = GameState.GameScreen;
+                case '0':
+                    nextGameStateState = GameState.StartMenu;
+                    break;
+                case '1':
+                    nextGameStateState = GameState.GameScreen;
+                    break;
+                case '2':
+                    nextGameStateState = GameState.LevelEditor;
+                    break;
             }
         }
 

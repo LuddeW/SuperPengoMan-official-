@@ -10,39 +10,15 @@ using System.Text;
 
 namespace SuperPengoMan
 {
-    class HandleGame
+    class HandleGame: ObjectHandler
     {
         Game game;
 
-        Texture2D coin;
-        Texture2D penguin;
-        Texture2D penguin_jump;
-        Texture2D penguin_glide;
-        Texture2D iceTile;
-        Texture2D caveBackground;
-        Texture2D waterTile;
-        Texture2D spike;
-        Texture2D snowball;
-        Texture2D ladderTile;
-        Texture2D penguin_climb;
-
         Background backgrounds;
 
-        Vector2 pengoRespawnPos;
         Point gameTiles = new Point(0,0);
 
-        private List<FloorTile> floortile = new List<FloorTile>();
-        private List<WaterTile> watertile = new List<WaterTile>();
-        private List<Trap> traps = new List<Trap>();
-        private List<Enemy> enemies = new List<Enemy>();
-        private List<Ladder> ladders = new List<Ladder>();
-        private List<Coin> coins = new List<Coin>();
-        private List<MenuTile> menuTiles = new List<MenuTile>();
-
-        Pengo pengo;
         Camera camera;
-        private Game1.AddPointsDelegate addPointsDelegate;
-        private Game1.HandleMenuOptionDelegate handleMenuOptionDelegate;
 
         public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate)
         {
@@ -60,19 +36,16 @@ namespace SuperPengoMan
         public void LoadContent()
         {
 
-
-            coin = game.Content.Load<Texture2D>(@"coin");
-            penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
-            penguin_jump = game.Content.Load<Texture2D>(@"penguin_jump");
-            penguin_glide = game.Content.Load<Texture2D>(@"penguin_glide");
-            penguin_climb = game.Content.Load<Texture2D>(@"penguin_climb");
-            iceTile = game.Content.Load<Texture2D>(@"ice_tile");
-            waterTile = game.Content.Load<Texture2D>(@"water_tile");
-            spike = game.Content.Load<Texture2D>(@"spike");
-            snowball = game.Content.Load<Texture2D>(@"snowball");
-            ladderTile = game.Content.Load<Texture2D>(@"Ladder");
-           
+            LoadContent(game.Content);
             camera = new Camera();
+        }
+
+        public void CreateLevel(Level level)
+        {
+            gameTiles.Y = level.Rows;
+            gameTiles.X = level.Cols;
+            backgrounds = new Background(game, gameTiles);
+            CreateLevel(level, Game1.TILE_SIZE, new Point(0, 0));
         }
 
         public void Update()
@@ -139,54 +112,6 @@ namespace SuperPengoMan
             }
             camera.Update(pengo.pos);
             
-        }
-
-        public void CreateLevel(Level level)
-        {
-            gameTiles.Y = level.Rows;
-            gameTiles.X = level.Cols;
-            backgrounds = new Background(game, gameTiles);
-            for (int row = 0; row < level.Rows; row++)
-            {
-                for (int col = 0; col < level.Cols; col++)
-                {
-                    ObjectFactory(level.Get(row,col).GameObject, level.Get(row, col).Option, row, col);
-                }
-            }
-        }
-
-        private void ObjectFactory(char gameObject, char option, int row, int col)
-        {
-            Vector2 pos = new Vector2(Game1.TILE_SIZE * col, Game1.TILE_SIZE * row);
-            switch (gameObject)
-            {
-                case 'F':
-                    floortile.Add(new FloorTile(iceTile, pos));
-                    break;
-                case 'S':
-                    pengoRespawnPos = pos;
-                    pengo = new Pengo(penguin, penguin_glide, penguin_jump, penguin_climb, pos);
-                    break;
-                case 'W':
-                    watertile.Add(new WaterTile(waterTile, pos));
-                    break;
-                case 'T':
-                    traps.Add(new Trap(spike, pos));
-                    break;
-                case 'E':
-                    enemies.Add( new Enemy(snowball, pos));
-                    break;
-                case 'L':
-                    ladders.Add(new Ladder(ladderTile, pos));
-                    break;
-                case 'C':
-                    coins.Add(new Coin(coin, pos, option, addPointsDelegate));
-                    break;
-                case 'M':
-                    menuTiles.Add(new MenuTile(waterTile, pos, option, handleMenuOptionDelegate));
-                    break;
-
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

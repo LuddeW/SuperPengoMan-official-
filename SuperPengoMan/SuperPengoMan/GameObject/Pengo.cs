@@ -207,16 +207,16 @@ namespace SuperPengoMan.GameObject
             switch (currentSprite)
             {
                 case SpriteShow.hor:
-                    spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
+                    Draw(spriteBatch, texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
                 case SpriteShow.slide:
-                    spriteBatch.Draw(glide, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
+                    Draw(spriteBatch, glide, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
                 case SpriteShow.jump:
-                    spriteBatch.Draw(jump, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
+                    Draw(spriteBatch, jump, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
                 case SpriteShow.climb:
-                    spriteBatch.Draw(climb, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
+                    Draw(spriteBatch, climb, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
                     break;
             }
         }

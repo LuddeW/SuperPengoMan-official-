@@ -45,7 +45,7 @@ namespace SuperPengoMan.GameObject
         {
             if (visible)
             {
-                spriteBatch.Draw(texture, dstRect, srcRect, Color.White);
+                Draw(spriteBatch, texture, dstRect, srcRect, Color.White);
             }
 
         }

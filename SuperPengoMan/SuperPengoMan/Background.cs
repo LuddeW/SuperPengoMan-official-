@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SuperPengoMan
 {
-    class Background
+    class Background: SpriteBatchObject
     {
         Game game;
         Point gameTiles;
@@ -45,15 +45,16 @@ namespace SuperPengoMan
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
-            spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
+            Draw(spriteBatch, background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), 
+                                background.Width, background.Height), Color.White);
+            Draw(spriteBatch, caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             foreach (Vector2 v in middlegroundVector)
             {
-                spriteBatch.Draw(middleground, new Vector2(v.X, 20), Color.White);
+                Draw(spriteBatch, middleground, new Vector2(v.X, 20), Color.White);
             }
             foreach (Vector2 v in foregroundVector)
             {
-                spriteBatch.Draw(foreground, new Vector2(v.X, 100), Color.White);
+                Draw(spriteBatch, foreground, new Vector2(v.X, 100), Color.White);
             }
         }
 

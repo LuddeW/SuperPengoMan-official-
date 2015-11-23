@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SuperPengoMan.GameObject
 {
-    class GameObject
+    class GameObject: SpriteBatchObject
     {
         public Texture2D texture;
         public Vector2 pos;
@@ -19,7 +19,8 @@ namespace SuperPengoMan.GameObject
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, pos, Color.White);
+            Draw(spriteBatch, texture, pos, Color.White);
         }
+
     }
 }
