@@ -25,6 +25,7 @@ namespace SuperPengoMan
                 {
                     break;
                 }
+                int ix = 0;
                 for (int col = 0; col < objectStr.Length; col++)
                 {
                     // Handle old file format 
@@ -33,7 +34,7 @@ namespace SuperPengoMan
                     {
                         option = objectStr[col + 1];
                     }
-                    LevelFactory(objectStr[col], option, row, col);
+                    LevelFactory(objectStr[col], option, row, ix++);
                     if (option != '%')
                     {
                         col++;

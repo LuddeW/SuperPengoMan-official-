@@ -15,17 +15,17 @@ namespace SuperPengoMan.GameObject
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
         }
 
-        public bool PixelCollition(Pengo pengo)
+        public bool PixelCollition(Texture2D collideTexture, Rectangle collideSrcRect, Rectangle collideHitbox)
         {
             Color[] dataA = new Color[texture.Width * texture.Height];
             texture.GetData(dataA);
-            Color[] dataB = new Color[pengo.texture.Width * pengo.texture.Height];
-            pengo.texture.GetData(dataB);
+            Color[] dataB = new Color[collideTexture.Width * collideTexture.Height];
+            collideTexture.GetData(dataB);
 
-            int top = Math.Max(hitbox.Top, pengo.hitbox.Top);
-            int bottom = Math.Min(hitbox.Bottom, pengo.hitbox.Bottom);
-            int left = Math.Max(hitbox.Left, pengo.hitbox.Left);
-            int right = Math.Min(hitbox.Right, pengo.hitbox.Right);
+            int top = Math.Max(hitbox.Top, collideHitbox.Top);
+            int bottom = Math.Min(hitbox.Bottom, collideHitbox.Bottom);
+            int left = Math.Max(hitbox.Left, collideHitbox.Left);
+            int right = Math.Min(hitbox.Right, collideHitbox.Right);
 
             for (int y = top; y < bottom; y++)
             {
@@ -33,7 +33,7 @@ namespace SuperPengoMan.GameObject
                 {
                     Color colorA = dataA[texture.Width * (y - hitbox.Y) + x - hitbox.X];
                     //Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-                    Color colorB = dataB[pengo.texture.Width / 4 * (y - pengo.hitbox.Y + pengo.srcRect.Y) + x - pengo.hitbox.X + pengo.srcRect.X];
+                    Color colorB = dataB[collideTexture.Width / 4 * (y - collideHitbox.Y + collideSrcRect.Y) + x - collideHitbox.X + collideSrcRect.X];
                     //Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
 
                     if (colorA.A + colorB.A > 256)

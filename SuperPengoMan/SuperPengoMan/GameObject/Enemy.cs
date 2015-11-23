@@ -34,14 +34,14 @@ namespace SuperPengoMan.GameObject
             pos.X += speed;
         }
 
-        public bool IsColliding(FloorTile floorTile)
+        public bool IsColliding(Rectangle leftHitbox, Rectangle rightHitbox)
         {
-            if (hitbox.Intersects(floorTile.leftHitbox))
+            if (hitbox.Intersects(leftHitbox))
             {
                 currentHitState = HitState.left;
                 return true;
             }
-            else if (hitbox.Intersects(floorTile.rightHitbox))
+            else if (hitbox.Intersects(rightHitbox))
             {
                 currentHitState = HitState.right;
                 return true;

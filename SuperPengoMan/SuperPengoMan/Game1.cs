@@ -11,23 +11,27 @@ namespace SuperPengoMan
     
     public class Game1 : Game
     {
+        public delegate void AddPointsDelegate(int points);
+        public delegate void HandleMenuOptionDelegate(char menuOption);
+
         public const int TILE_SIZE = 40;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         private HandleGame handlegame;
-        private enum GameState { StartMenu, HighScore, GameScreen, LevelEditor, EndGame }
-        private GameState CurrentState = GameState.StartMenu;
+        private enum GameState { Setup, StartMenu, HighScore, GameScreen, LevelEditor, EndGame }
+        private GameState currentGameState = GameState.Setup;
+        private GameState nextGameStateState = GameState.StartMenu;
 
         private LevelReader levelsLevelReader;
         private LevelReader menuLevelReader;
+        private int currentLevel = 0;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            handlegame = new HandleGame(this);
             levelsLevelReader = new LevelReader(@"Level1.txt");
             menuLevelReader = new LevelReader(@"MenuLevel.txt");
         }
@@ -44,9 +48,6 @@ namespace SuperPengoMan
 
         protected override void LoadContent()
         {
-            handlegame.LoadContent();
-            handlegame.CreateLevel(menuLevelReader[0]);
-
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
@@ -58,7 +59,7 @@ namespace SuperPengoMan
 
         protected override void Update(GameTime gameTime)
         {
-            switch (CurrentState)
+            switch (currentGameState)
             {
                 case GameState.StartMenu:
                     handlegame.Update();
@@ -75,7 +76,7 @@ namespace SuperPengoMan
 
                     break;
                 case GameState.EndGame:
-                    CurrentState = GameState.StartMenu;
+                    nextGameStateState = GameState.StartMenu;
                     break;
             }
             base.Update(gameTime);
@@ -84,11 +85,12 @@ namespace SuperPengoMan
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            switch (CurrentState)
+            switch (currentGameState)
             {
                 case GameState.StartMenu:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, handlegame.PengoCamera.ViewMatrix);
                     handlegame.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
 
                 case GameState.HighScore:
@@ -98,16 +100,62 @@ namespace SuperPengoMan
                 case GameState.GameScreen:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, handlegame.PengoCamera.ViewMatrix);
                     handlegame.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
                 case GameState.LevelEditor:
                     Debug.WriteLine("LevelEditor");
                     break;
                 case GameState.EndGame:
-                    CurrentState = GameState.StartMenu;
+                    Debug.WriteLine("EndGame");
                     break;
             }
-            spriteBatch.End();
             base.Draw(gameTime);
+
+            HandleNextState();
         }
+
+        private void HandleNextState()
+        {
+            if (nextGameStateState != currentGameState)
+            {
+                switch (nextGameStateState)
+                {
+                    case GameState.StartMenu:
+                        StartHandleGame(menuLevelReader[0]);
+                        break;
+                    case GameState.HighScore:
+                        break;
+                    case GameState.GameScreen:
+                        StartHandleGame(levelsLevelReader[currentLevel]);
+                        break;
+                    case GameState.LevelEditor:
+                        break;
+                    case GameState.EndGame:
+                        break;
+                }
+            }
+            currentGameState = nextGameStateState;
+        }
+
+        private void StartHandleGame(Level level)
+        {
+            handlegame = new HandleGame(this, new AddPointsDelegate(AddPoints), new HandleMenuOptionDelegate(HandleMenuOption));
+            handlegame.LoadContent();
+            handlegame.CreateLevel(level);
+        }
+
+        private void AddPoints(int points)
+        {
+            
+        }
+
+        private void HandleMenuOption(char menuOption)
+        {
+            if (menuOption == '0')
+            {
+                nextGameStateState = GameState.GameScreen;
+            }
+        }
+
     }
 }

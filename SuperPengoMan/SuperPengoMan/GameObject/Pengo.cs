@@ -56,20 +56,20 @@ namespace SuperPengoMan.GameObject
             clock.AddTime(0.03f);
         }
 
-        public bool IsColliding(FloorTile floorTile)
+        public bool IsColliding(Rectangle topHitbox, Rectangle leftHitbox, Rectangle rightHitbox)
         {
-            if (hitbox.Intersects(floorTile.topHitbox))
+            if (hitbox.Intersects(topHitbox))
             {
                 
                 currentHitState = HitState.top;
                 return true;
             }
-            else if (hitbox.Intersects(floorTile.leftHitbox))
+            else if (hitbox.Intersects(leftHitbox))
             {
                 currentHitState = HitState.left;
                 return true;
             }
-            else if (hitbox.Intersects(floorTile.rightHitbox))
+            else if (hitbox.Intersects(rightHitbox))
             {
                 currentHitState = HitState.right;
                 return true;
@@ -81,7 +81,7 @@ namespace SuperPengoMan.GameObject
             }
         }
 
-        public void HandleCollision(FloorTile floorTile)
+        public void HandleCollision(Rectangle collideHitbox)
         {
             switch (currentHitState)
             {
@@ -89,7 +89,7 @@ namespace SuperPengoMan.GameObject
                     isOnGround = true;
                     speed.Y = 5.0f;
                     speed.X = 0;
-                    hitbox.Y = floorTile.topHitbox.Y - hitbox.Height;
+                    hitbox.Y = collideHitbox.Y - hitbox.Height;
                     pos.Y = hitbox.Y;
                     break;
                 case HitState.left:

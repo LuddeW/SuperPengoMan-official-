@@ -10,92 +10,76 @@ namespace SuperPengoMan
 {
     class Background
     {
-        List<Vector2> foreground, middleground;
+        Game game;
+        Point gameTiles;
+        List<Vector2> foregroundVector, middlegroundVector;
         int fgSpacing, mgSpacing;
         float fgSpeed, mgSpeed;
-        Texture2D[] texture;
-        GameWindow window;
-        public Background(ContentManager Content, GameWindow window)
-        {
-            this.window = window;
-            this.texture = new Texture2D[2];
 
-            texture[0] = Content.Load<Texture2D>(@"cloud");
-            texture[1] = Content.Load<Texture2D>(@"big_cloud");
-            CreatForeGround();
-            CreatMiddleGround();
+        Texture2D background;
+        Texture2D middleground;
+        Texture2D foreground;
+        Texture2D caveBackground;
+
+        public Background(Game game, Point gametiles)
+        {
+            this.game = game;
+            this.gameTiles = gametiles;
+
+            foreground = game.Content.Load<Texture2D>(@"cloud");
+            middleground = game.Content.Load<Texture2D>(@"big_cloud");
+            background = game.Content.Load<Texture2D>(@"background");
+            caveBackground = game.Content.Load<Texture2D>(@"snowcave");
+
+            fgSpeed = 0.75f;
+            CreateLayer(ref foregroundVector, ref fgSpacing, foreground.Width, foreground.Height);
+            mgSpeed = 0.3f;
+            CreateLayer(ref middlegroundVector, ref mgSpacing, middleground.Width, foreground.Height - middleground.Height);
         }
 
         public void Update()
         {
-            MoveForeground();
-            MoveMiddleGround();
+            MoveLayer(foregroundVector, fgSpacing, fgSpeed);
+            MoveLayer(middlegroundVector, mgSpacing, mgSpeed);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Vector2 v in middleground)
+            spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
+            spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
+            foreach (Vector2 v in middlegroundVector)
             {
-                spriteBatch.Draw(texture[1], new Vector2(v.X, 20), Color.White);
+                spriteBatch.Draw(middleground, new Vector2(v.X, 20), Color.White);
             }
-            foreach (Vector2 v in foreground)
+            foreach (Vector2 v in foregroundVector)
             {
-                spriteBatch.Draw(texture[0], new Vector2(v.X, 100), Color.White);
-            }
-        }
-
-        private void CreatForeGround()
-        {
-            foreground = new List<Vector2>();
-            fgSpacing = texture[0].Width + 3 * Game1.TILE_SIZE;
-            fgSpeed = 0.75f;
-            for (int i = 0; i < (Game1.TILE_SIZE * 49 / fgSpacing) + 2; i++)
-            {
-                foreground.Add(new Vector2(i * fgSpacing, window.ClientBounds.Height - texture[0].Height));
+                spriteBatch.Draw(foreground, new Vector2(v.X, 100), Color.White);
             }
         }
 
-        private void CreatMiddleGround()
+        private void CreateLayer(ref List<Vector2> layerVector, ref int spacing,  int width, int height)
         {
-            middleground = new List<Vector2>();
-            mgSpacing = texture[1].Width + Game1.TILE_SIZE * 3;
-            mgSpeed = 0.3f;
-            for (int i = 0; i < (Game1.TILE_SIZE * 49); i++)
+            layerVector = new List<Vector2>();
+            spacing = width + 3 * Game1.TILE_SIZE;
+            for (int i = 0; i < (Game1.TILE_SIZE * (gameTiles.X -1) / spacing) + 2; i++)
             {
-                middleground.Add(new Vector2(i * mgSpacing, window.ClientBounds.Height - texture[0].Height - texture[1].Height));
+                layerVector.Add(new Vector2(i * spacing, game.Window.ClientBounds.Height - height));
             }
         }
 
-        private void MoveForeground()
+        private void MoveLayer(List<Vector2> layerVector, int spacing, float speed)
         {
-            for (int i = 0; i < foreground.Count; i++)
+            for (int i = 0; i < layerVector.Count; i++)
             {
-                foreground[i] = new Vector2(foreground[i].X - fgSpeed, foreground[i].Y);
-                if (foreground[i].X <= -fgSpacing)
+                layerVector[i] = new Vector2(layerVector[i].X - speed, layerVector[i].Y);
+                if (layerVector[i].X <= -spacing)
                 {
                     int j = i - 1;
                     if (j < 0)
                     {
-                        j = foreground.Count - 1;
+                        j = layerVector.Count - 1;
                     }
-                    foreground[i] = new Vector2(foreground[j].X + fgSpacing - 1, foreground[i].Y);
-                }
-            }
-        }
-
-        private void MoveMiddleGround()
-        {
-            for (int i = 0; i < middleground.Count; i++)
-            {
-                middleground[i] = new Vector2(middleground[i].X - mgSpeed, middleground[i].Y);
-                if (middleground[i].X <= -mgSpacing)
-                {
-                    int j = i - 1;
-                    if (j < 0)
-                    {
-                        j = middleground.Count - 1;
-                    }
-                    middleground[i] = new Vector2(middleground[j].X + mgSpacing - 1, middleground[i].Y);
+                    layerVector[i] = new Vector2(layerVector[j].X + spacing - 1, layerVector[i].Y);
                 }
             }
         }

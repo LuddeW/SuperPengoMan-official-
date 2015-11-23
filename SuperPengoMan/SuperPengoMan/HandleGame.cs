@@ -14,11 +14,11 @@ namespace SuperPengoMan
     {
         Game game;
 
+        Texture2D coin;
         Texture2D penguin;
         Texture2D penguin_jump;
         Texture2D penguin_glide;
         Texture2D iceTile;
-        Texture2D background;
         Texture2D caveBackground;
         Texture2D waterTile;
         Texture2D spike;
@@ -29,22 +29,26 @@ namespace SuperPengoMan
         Background backgrounds;
 
         Vector2 pengoRespawnPos;
+        Point gameTiles = new Point(0,0);
 
-        List<FloorTile> floortile = new List<FloorTile>();
-        List<WaterTile> watertile = new List<WaterTile>();
-        List<Trap> trap = new List<Trap>();
-        List<Ladder> ladder = new List<Ladder>();
+        private List<FloorTile> floortile = new List<FloorTile>();
+        private List<WaterTile> watertile = new List<WaterTile>();
+        private List<Trap> traps = new List<Trap>();
+        private List<Enemy> enemies = new List<Enemy>();
+        private List<Ladder> ladders = new List<Ladder>();
+        private List<Coin> coins = new List<Coin>();
+        private List<MenuTile> menuTiles = new List<MenuTile>();
 
         Pengo pengo;
-        Enemy enemy;
         Camera camera;
+        private Game1.AddPointsDelegate addPointsDelegate;
+        private Game1.HandleMenuOptionDelegate handleMenuOptionDelegate;
 
-        //MenuLevel menuLevel;
-
-        public HandleGame(Game game)
+        public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate)
         {
             this.game = game;
-            //menuLevel = new MenuLevel(game);
+            this.addPointsDelegate = addPointsDelegate;
+            this.handleMenuOptionDelegate = handleMenuOptionDelegate;
         }
 
         public Camera PengoCamera
@@ -57,18 +61,16 @@ namespace SuperPengoMan
         {
 
 
+            coin = game.Content.Load<Texture2D>(@"coin");
             penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
             penguin_jump = game.Content.Load<Texture2D>(@"penguin_jump");
             penguin_glide = game.Content.Load<Texture2D>(@"penguin_glide");
             penguin_climb = game.Content.Load<Texture2D>(@"penguin_climb");
             iceTile = game.Content.Load<Texture2D>(@"ice_tile");
-            background = game.Content.Load<Texture2D>(@"background");
-            caveBackground = game.Content.Load<Texture2D>(@"snowcave");
             waterTile = game.Content.Load<Texture2D>(@"water_tile");
             spike = game.Content.Load<Texture2D>(@"spike");
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
-            backgrounds = new Background(game.Content, game.Window);
            
             camera = new Camera();
         }
@@ -78,26 +80,36 @@ namespace SuperPengoMan
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 game.Exit();
             pengo.Update();
-            enemy.Update();
+            foreach (MenuTile menuTile in menuTiles)
+            {
+                menuTile.IsColliding(pengo.hitbox);
+            }
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Update();
+            }
             foreach (FloorTile iceTile in floortile)
             {
-                if (pengo.IsColliding(iceTile))
+                if (pengo.IsColliding(iceTile.TopHitbox, iceTile.LeftHitbox,iceTile.RightHitbox))
                 {
-                    pengo.HandleCollision(iceTile);
+                    pengo.HandleCollision(iceTile.TopHitbox);
                 }
-                if (enemy.IsColliding(iceTile))
+                foreach (Enemy enemy in enemies)
                 {
-                    enemy.HandleCollision();
+                    if (enemy.IsColliding(iceTile.LeftHitbox, iceTile.RightHitbox))
+                    {
+                        enemy.HandleCollision();
+                    }
                 }
             }
-            foreach (Trap spike in trap)
+            foreach (Trap spike in traps)
             {
-                if (spike.PixelCollition(pengo))
+                if (spike.PixelCollition(pengo.texture, pengo.srcRect, pengo.hitbox))
                 {
                     pengo.KillPengo(pengoRespawnPos);
                 }
             }
-            foreach (Ladder ladderTile in ladder)
+            foreach (Ladder ladderTile in ladders)
             {
                 if (ladderTile.hitbox.Intersects(pengo.hitbox))
                 {
@@ -105,27 +117,35 @@ namespace SuperPengoMan
                 }
             }
             backgrounds.Update();
-            
-            if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
+
+            foreach (Enemy enemy in enemies)
+            {
+                if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
+                {
+                    pengo.KillPengo(pengoRespawnPos);
+                }
+                else if (enemy.topHitbox.Intersects(pengo.hitbox))
+                {
+                    Console.WriteLine("You killed it");
+                }
+            }
+            if (pengo.pos.Y >= Game1.TILE_SIZE * (gameTiles.Y - 1))
             {
                 pengo.KillPengo(pengoRespawnPos);
             }
-            else if (enemy.topHitbox.Intersects(pengo.hitbox))
+            foreach (Coin coin in coins)
             {
-                Console.WriteLine("You killed it");
-            }
-            if (pengo.pos.Y >= Game1.TILE_SIZE * 14)
-            {
-                pengo.KillPengo(pengoRespawnPos);
+                coin.IsColliding(pengo.hitbox);
             }
             camera.Update(pengo.pos);
             
         }
 
-
-
         public void CreateLevel(Level level)
         {
+            gameTiles.Y = level.Rows;
+            gameTiles.X = level.Cols;
+            backgrounds = new Background(game, gameTiles);
             for (int row = 0; row < level.Rows; row++)
             {
                 for (int col = 0; col < level.Cols; col++)
@@ -151,46 +171,56 @@ namespace SuperPengoMan
                     watertile.Add(new WaterTile(waterTile, pos));
                     break;
                 case 'T':
-                    trap.Add(new Trap(spike, pos));
+                    traps.Add(new Trap(spike, pos));
                     break;
                 case 'E':
-                    enemy = new Enemy(snowball, pos);
+                    enemies.Add( new Enemy(snowball, pos));
                     break;
                 case 'L':
-                    ladder.Add(new Ladder(ladderTile, pos));
+                    ladders.Add(new Ladder(ladderTile, pos));
+                    break;
+                case 'C':
+                    coins.Add(new Coin(coin, pos, option, addPointsDelegate));
+                    break;
+                case 'M':
+                    menuTiles.Add(new MenuTile(waterTile, pos, option, handleMenuOptionDelegate));
                     break;
 
             }
-        }
-
-        public Vector2 GetPengoPos()
-        {
-            return pengo.pos;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
-            spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
-            foreach (Ladder ladderTile in ladder)
-            {
-                ladderTile.Draw(spriteBatch);
-            }
-            enemy.Draw(spriteBatch);
-            pengo.Draw(spriteBatch);
             foreach (FloorTile iceTile in floortile)
             {
                 iceTile.Draw(spriteBatch);
             }
+            foreach (Ladder ladderTile in ladders)
+            {
+                ladderTile.Draw(spriteBatch);
+            }
+            foreach (Trap spike in traps)
+            {
+                spike.Draw(spriteBatch);
+            }
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Draw(spriteBatch);
+            }
+            foreach (Coin coin in coins)
+            {
+                coin.Draw(spriteBatch);
+            }
+            pengo.Draw(spriteBatch);
             foreach (WaterTile waterTile in watertile)
             {
                 waterTile.Draw(spriteBatch);
             }
-            foreach (Trap spike in trap)
+            foreach (MenuTile menuTile in menuTiles)
             {
-                spike.Draw(spriteBatch);
+                menuTile.Draw(spriteBatch);
             }
         }
     }
