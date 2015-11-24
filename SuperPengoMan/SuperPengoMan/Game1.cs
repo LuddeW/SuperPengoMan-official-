@@ -46,7 +46,7 @@ namespace SuperPengoMan
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            levelEditor = new LevelEditor(this, levelsLevelReader);
+            levelEditor = new LevelEditor(this, levelsLevelReader, new HandleMenuOptionDelegate(HandleMenuOption));
         }
 
 

@@ -35,6 +35,11 @@ namespace SuperPengoMan
         internal Game1.AddPointsDelegate addPointsDelegate = null;
         internal Game1.HandleMenuOptionDelegate handleMenuOptionDelegate = null;
 
+        public ObjectHandler(Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate)
+        {
+            this.addPointsDelegate = addPointsDelegate;
+            this.handleMenuOptionDelegate = handleMenuOptionDelegate;
+        }
 
         internal void LoadContent(ContentManager content)
         {

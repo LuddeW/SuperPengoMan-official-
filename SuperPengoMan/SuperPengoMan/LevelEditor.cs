@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SuperPengoMan.GameObject;
+using System;
+using Microsoft.Xna.Framework.Input;
 
 namespace SuperPengoMan
 {
@@ -12,7 +14,8 @@ namespace SuperPengoMan
         private LevelReader levelsLevelReader;
         int currentlevel = -1;
 
-        public LevelEditor(Game game, LevelReader levelsLevelReader)
+        public LevelEditor(Game game, LevelReader levelsLevelReader, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate) :
+            base(null, handleMenuOptionDelegate)
         {
             this.levelsLevelReader = levelsLevelReader;
             camera = new Camera();
@@ -28,6 +31,7 @@ namespace SuperPengoMan
         public void InitEditor()
         {
             currentlevel = -1;
+            GameObject.GameObject.Scale = 0.5f;
             NextLevel();
         }
 
@@ -39,7 +43,18 @@ namespace SuperPengoMan
                 currentlevel++;
             }
 
-            CreateLevel(levelsLevelReader[currentlevel], Game1.TILE_SIZE, new Point(0, 0));
+            CreateLevel(levelsLevelReader[currentlevel], Game1.TILE_SIZE/2, new Point(100, 200));
+            UpdateObjects();
+        }
+
+        private void UpdateObjects()
+        {
+            pengo.Update();
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Update();
+            }
+            camera.Update(pengo.pos);
         }
 
         private void ResetLevel()
@@ -49,6 +64,12 @@ namespace SuperPengoMan
 
         public void Update()
         {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Back))
+            {
+                GameObject.GameObject.Scale = 1f;
+                handleMenuOptionDelegate('0');
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

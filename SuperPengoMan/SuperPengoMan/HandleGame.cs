@@ -20,11 +20,10 @@ namespace SuperPengoMan
 
         Camera camera;
 
-        public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate)
+        public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate) :
+            base(addPointsDelegate, handleMenuOptionDelegate)
         {
             this.game = game;
-            this.addPointsDelegate = addPointsDelegate;
-            this.handleMenuOptionDelegate = handleMenuOptionDelegate;
         }
 
         public Camera PengoCamera
