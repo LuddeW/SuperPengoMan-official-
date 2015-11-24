@@ -49,68 +49,78 @@ namespace SuperPengoMan
 
         public void Update()
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Back))
+            {
+                handleMenuOptionDelegate('0');
+            }
+            else if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 game.Exit();
-            pengo.Update();
-            foreach (MenuTile menuTile in menuTiles)
-            {
-                menuTile.IsColliding(pengo.hitbox);
             }
-            foreach (Enemy enemy in enemies)
+            else
             {
-                enemy.Update();
-            }
-            foreach (FloorTile iceTile in floortile)
-            {
-                if (pengo.IsColliding(iceTile.TopHitbox, iceTile.LeftHitbox,iceTile.RightHitbox))
+                pengo.Update();
+                foreach (MenuTile menuTile in menuTiles)
                 {
-                    pengo.HandleCollision(iceTile.TopHitbox);
+                    menuTile.IsColliding(pengo.hitbox);
                 }
                 foreach (Enemy enemy in enemies)
                 {
-                    if (enemy.IsColliding(iceTile.LeftHitbox, iceTile.RightHitbox))
+                    enemy.Update();
+                }
+                foreach (FloorTile iceTile in floortile)
+                {
+                    if (pengo.IsColliding(iceTile.TopHitbox, iceTile.LeftHitbox,iceTile.RightHitbox))
                     {
-                        enemy.HandleCollision();
+                        pengo.HandleCollision(iceTile.TopHitbox);
+                    }
+                    foreach (Enemy enemy in enemies)
+                    {
+                        if (enemy.IsColliding(iceTile.LeftHitbox, iceTile.RightHitbox))
+                        {
+                            enemy.HandleCollision();
+                        }
                     }
                 }
-            }
-            foreach (Trap spike in traps)
-            {
-                if (spike.PixelCollition(pengo.texture, pengo.srcRect, pengo.hitbox))
+                foreach (Trap spike in traps)
                 {
-                    pengo.KillPengo(pengoRespawnPos);
+                    if (spike.PixelCollition(pengo.texture, pengo.srcRect, pengo.hitbox))
+                    {
+                        pengo.KillPengo(pengoRespawnPos);
+                    }
                 }
-            }
-            foreach (Ladder ladderTile in ladders)
-            {
-                if (ladderTile.hitbox.Intersects(pengo.hitbox))
+                foreach (Ladder ladderTile in ladders)
                 {
-                    pengo.isOnLadder = true;
+                    if (ladderTile.hitbox.Intersects(pengo.hitbox))
+                    {
+                        pengo.isOnLadder = true;
+                    }
                 }
-            }
-            backgrounds.Update();
+                backgrounds.Update();
 
-            foreach (Enemy enemy in enemies)
-            {
-                if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
+                foreach (Enemy enemy in enemies)
+                {
+                    if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
+                    {
+                        pengo.KillPengo(pengoRespawnPos);
+                    }
+                    else if (enemy.topHitbox.Intersects(pengo.hitbox))
+                    {
+                        Console.WriteLine("You killed it");
+                    }
+                }
+                if (pengo.pos.Y >= Game1.TILE_SIZE * (gameTiles.Y - 1))
                 {
                     pengo.KillPengo(pengoRespawnPos);
                 }
-                else if (enemy.topHitbox.Intersects(pengo.hitbox))
+                foreach (Coin coin in coins)
                 {
-                    Console.WriteLine("You killed it");
+                    coin.IsColliding(pengo.hitbox);
                 }
+                camera.Update(pengo.pos);
             }
-            if (pengo.pos.Y >= Game1.TILE_SIZE * (gameTiles.Y - 1))
-            {
-                pengo.KillPengo(pengoRespawnPos);
-            }
-            foreach (Coin coin in coins)
-            {
-                coin.IsColliding(pengo.hitbox);
-            }
-            camera.Update(pengo.pos);
-            
         }
 
         public void Draw(SpriteBatch spriteBatch)
