@@ -133,8 +133,7 @@ namespace SuperPengoMan.GameObject
             {
                 speed.Y += 0.3f;
                 speed.X = 0;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                currentSprite = SpriteShow.jump;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.D))
             {
@@ -152,34 +151,32 @@ namespace SuperPengoMan.GameObject
             {
                 speed.Y = -6;
                 isOnGround = false;
-                currentSprite = SpriteShow.jump;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.D) && isOnGround)
             {              
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 currentSprite = SpriteShow.slide;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Right) && isOnGround)
             {
                 speed.X = +4;
-                currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.None;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
             }
             if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Left) && isOnGround)
             {
                 speed.X = - 4;
-                currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.FlipHorizontally;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
             }
             if (keyState.IsKeyDown(Keys.Up) && isOnLadder)
             {
                 speed.Y = -1;
                 isOnGround = false;
-                currentSprite = SpriteShow.climb;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 6, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 isOnLadder = false;
             }
 
@@ -204,21 +201,7 @@ namespace SuperPengoMan.GameObject
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            switch (currentSprite)
-            {
-                case SpriteShow.hor:
-                    spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.slide:
-                    spriteBatch.Draw(glide, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.jump:
-                    spriteBatch.Draw(jump, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.climb:
-                    spriteBatch.Draw(climb, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-            }
+                    spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);              
         }
 
         private int PengoAnimation()

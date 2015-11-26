@@ -33,7 +33,8 @@ namespace SuperPengoMan.GameObject
                 {
                     Color colorA = dataA[texture.Width * (y - hitbox.Y) + x - hitbox.X];
                     //Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-                    Color colorB = dataB[pengo.texture.Width / 4 * (y - pengo.hitbox.Y + pengo.srcRect.Y) + x - pengo.hitbox.X + pengo.srcRect.X];
+                    int index = pengo.texture.Width * (y - pengo.hitbox.Y + pengo.srcRect.Y) + x - pengo.hitbox.X + pengo.srcRect.X;
+                    Color colorB = dataB[index];
                     //Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
 
                     if (colorA.A + colorB.A > 256)
