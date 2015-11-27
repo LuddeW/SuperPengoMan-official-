@@ -36,7 +36,7 @@ namespace SuperPengoMan
 
         protected override void Initialize()
         {
-
+            KeyList.Init();
             graphics.PreferredBackBufferWidth = TILE_SIZE * 15;
             graphics.PreferredBackBufferHeight = TILE_SIZE * 15;
             graphics.ApplyChanges();

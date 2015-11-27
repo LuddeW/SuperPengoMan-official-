@@ -30,7 +30,8 @@ namespace SuperPengoMan.GameObject
         private bool moving = false;
         private SpriteEffects spriteFx = SpriteEffects.None;
         public bool isOnLadder = false;
-        
+
+        Color[] texData;
 
         public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Texture2D climb, Vector2 pos) : base(texture, pos)
         {
@@ -41,7 +42,13 @@ namespace SuperPengoMan.GameObject
             speed = new Vector2(1, 1);
             windowY = Game1.TILE_SIZE * 15;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            texData = new Color[texture.Width * texture.Height];
+            texture.GetData(texData);
+
         }
+
+        public Color[] TexData { get { return texData; }}
+        public int TexWidth { get { return texture.Width; } }
 
         public void Update()
         {

@@ -13,24 +13,38 @@ namespace SuperPengoMan.GameObject
 
         public bool visible = true;
 
-        private int coins;
+        private char option = '0';
         private Rectangle srcRect;
         private Rectangle dstRect;
 
         public Coin(Texture2D texture,  Vector2 pos, char option, Game1.AddPointsDelegate addPoints) : base(texture, pos)
         {
-            if (option == '0')
-            {
-                this.coins = 10;
-            }
-            else
-            {
-                this.coins = 50;
-            }
+            SetOption(option);
             this.addPoints = addPoints;
             srcRect = new Rectangle(0, 0, texture.Width, texture.Height);
-            dstRect = new Rectangle(Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y), Game1.TILE_SIZE,Game1.TILE_SIZE);
-            if (coins <= 10)
+        }
+
+        private int Points
+        {
+            get
+            {
+                if (option == '0')
+                {
+                    return 10;
+                }
+                else
+                {
+                    return 50;
+                }
+
+            }
+        }
+
+        public void SetOption(char option)
+        {
+            this.option = option;
+            dstRect = new Rectangle(Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y), Game1.TILE_SIZE, Game1.TILE_SIZE);
+            if (Points <= 10)
             {
                 dstRect.Inflate(-15, -15);
             }
@@ -38,7 +52,6 @@ namespace SuperPengoMan.GameObject
             {
                 dstRect.Inflate(-10, -10);
             }
-
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -59,7 +72,7 @@ namespace SuperPengoMan.GameObject
             if (temp.Intersects(tempHitRect) && visible)
             {
                 visible = false;
-                addPoints(coins);
+                addPoints(Points);
                 return true;
             }
             else
@@ -67,5 +80,6 @@ namespace SuperPengoMan.GameObject
                 return false;
             }  
         }
+
     }
 }

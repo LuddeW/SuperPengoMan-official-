@@ -36,11 +36,13 @@ namespace SuperPengoMan
         {
 
             LoadContent(game.Content);
-            camera = new Camera();
+            camera = new Camera(Game1.TILE_SIZE*15, Game1.TILE_SIZE, 1);
+           
         }
 
         public void CreateLevel(Level level)
         {
+            camera.GameAreaTilesWidth = level.Cols;
             gameTiles.Y = level.Rows;
             gameTiles.X = level.Cols;
             backgrounds = new Background(game, gameTiles);
@@ -70,7 +72,7 @@ namespace SuperPengoMan
                 {
                     enemy.Update();
                 }
-                foreach (FloorTile iceTile in floortile)
+                foreach (FloorTile iceTile in floorTiles)
                 {
                     if (pengo.IsColliding(iceTile.TopHitbox, iceTile.LeftHitbox,iceTile.RightHitbox))
                     {
@@ -86,7 +88,7 @@ namespace SuperPengoMan
                 }
                 foreach (Trap spike in traps)
                 {
-                    if (spike.PixelCollition(pengo.texture, pengo.srcRect, pengo.hitbox))
+                    if (spike.PixelCollition(pengo.TexData, pengo.TexWidth, pengo.srcRect, pengo.hitbox))
                     {
                         pengo.KillPengo(pengoRespawnPos);
                     }
@@ -127,7 +129,7 @@ namespace SuperPengoMan
         {
 
             backgrounds.Draw(spriteBatch);
-            foreach (FloorTile iceTile in floortile)
+            foreach (FloorTile iceTile in floorTiles)
             {
                 iceTile.Draw(spriteBatch);
             }
@@ -148,7 +150,7 @@ namespace SuperPengoMan
                 coin.Draw(spriteBatch);
             }
             pengo.Draw(spriteBatch);
-            foreach (WaterTile waterTile in watertile)
+            foreach (WaterTile waterTile in waterTiles)
             {
                 waterTile.Draw(spriteBatch);
             }

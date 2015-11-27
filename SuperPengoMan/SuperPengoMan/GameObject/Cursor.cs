@@ -10,7 +10,6 @@ namespace SuperPengoMan.GameObject
 {
     class Cursor : GameObject
     {
-        public Rectangle srcRect;
 
         KeyboardState keyState;
         KeyboardState prevKeyState;

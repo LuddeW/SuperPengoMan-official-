@@ -21,6 +21,11 @@ namespace SuperPengoMan.GameObject
 
         public Rectangle Hitbox { get; }
 
+        public void SetOption(char option)
+        {
+            menuOption = option;
+        }
+
         void HandleCollision()
         {
             handleMenuOptionDelegate(menuOption);

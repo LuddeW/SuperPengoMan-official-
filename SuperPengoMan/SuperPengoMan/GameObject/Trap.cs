@@ -10,18 +10,16 @@ namespace SuperPengoMan.GameObject
     class Trap:GameObject
     {
         Rectangle hitbox;
+        Color[] dataA;
         public Trap(Texture2D texture, Vector2 pos) : base(texture, pos)
         {
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
+            dataA = new Color[texture.Width * texture.Height];
+            texture.GetData(dataA);
         }
 
-        public bool PixelCollition(Texture2D collideTexture, Rectangle collideSrcRect, Rectangle collideHitbox)
+        public bool PixelCollition(Color[] dataB, int collideWidth, Rectangle collideSrcRect, Rectangle collideHitbox)
         {
-            Color[] dataA = new Color[texture.Width * texture.Height];
-            texture.GetData(dataA);
-            Color[] dataB = new Color[collideTexture.Width * collideTexture.Height];
-            collideTexture.GetData(dataB);
-
             int top = Math.Max(hitbox.Top, collideHitbox.Top);
             int bottom = Math.Min(hitbox.Bottom, collideHitbox.Bottom);
             int left = Math.Max(hitbox.Left, collideHitbox.Left);
@@ -33,7 +31,7 @@ namespace SuperPengoMan.GameObject
                 {
                     Color colorA = dataA[texture.Width * (y - hitbox.Y) + x - hitbox.X];
                     //Color colorA = dataA[(x - hitbox.Left) + (y - hitbox.Top) * hitbox.Width];
-                    Color colorB = dataB[collideTexture.Width / 4 * (y - collideHitbox.Y + collideSrcRect.Y) + x - collideHitbox.X + collideSrcRect.X];
+                    Color colorB = dataB[collideWidth / 4 * (y - collideHitbox.Y + collideSrcRect.Y) + x - collideHitbox.X + collideSrcRect.X];
                     //Color colorB = dataB[(x - pengo.hitbox.Left) + (y - pengo.hitbox.Top) * pengo.hitbox.Width];
 
                     if (colorA.A + colorB.A > 256)

@@ -27,8 +27,8 @@ namespace SuperPengoMan
         //Texture2D ladderTile;
         //Texture2D penguin_climb;
 
-        //List<FloorTile> floortile = new List<FloorTile>();
-        //List<WaterTile> watertile = new List<WaterTile>();
+        //List<FloorTile> Floortile = new List<FloorTile>();
+        //List<WaterTile> Watertile = new List<WaterTile>();
         //List<Trap> trap = new List<Trap>();
         //List<Ladder> ladder = new List<Ladder>();
 
@@ -82,14 +82,14 @@ namespace SuperPengoMan
         //    switch (objectChar)
         //    {
         //        case 'F':
-        //            floortile.Add(new FloorTile(iceTile, pos));
+        //            Floortile.Add(new FloorTile(iceTile, pos));
         //            break;
         //        case 'S':
         //            pengoRespawnPos = pos;
         //            pengo = new Pengo(penguin, penguin_glide, penguin_jump, penguin_climb, pos);
         //            break;
         //        case 'W':
-        //            watertile.Add(new WaterTile(waterTile, pos));
+        //            Watertile.Add(new WaterTile(waterTile, pos));
         //            break;
         //        case 'T':
         //            trap.Add(new Trap(spike, pos));
@@ -114,11 +114,11 @@ namespace SuperPengoMan
         //    }
         //    enemy.Draw(spriteBatch);
         //    pengo.Draw(spriteBatch);
-        //    foreach (FloorTile iceTile in floortile)
+        //    foreach (FloorTile iceTile in Floortile)
         //    {
         //        iceTile.Draw(spriteBatch);
         //    }
-        //    foreach (WaterTile waterTile in watertile)
+        //    foreach (WaterTile waterTile in Watertile)
         //    {
         //        waterTile.Draw(spriteBatch);
         //    }
