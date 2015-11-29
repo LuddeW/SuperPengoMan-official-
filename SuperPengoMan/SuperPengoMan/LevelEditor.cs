@@ -26,8 +26,9 @@ namespace SuperPengoMan
         KeyboardState prevKeyState;
         KeyboardState keyState;
 
-        public LevelEditor(Game game, LevelReader levelsLevelReader, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate) :
-            base(null, handleMenuOptionDelegate)
+        public LevelEditor(Game game, LevelReader levelsLevelReader,
+                            Game1.HandleOptionDelegate handleMenuOptionDelegate) :
+                            base(null, handleMenuOptionDelegate, null, null)
         {
             this.game = game;
             this.levelsLevelReader = levelsLevelReader;
@@ -40,10 +41,9 @@ namespace SuperPengoMan
             keyState = Keyboard.GetState();
         }
 
-        public Camera EditorCamera
+        public Matrix ViewMatrix
         {
-            get { return camera; }
-            set { camera = value; }
+            get { return camera.ViewMatrix; }
         }
 
         public int EditorTileSize { get; private set; }
@@ -57,7 +57,7 @@ namespace SuperPengoMan
                 {
                     result = levelsLevelReader[currentlevel];
                 }
-                return  result;
+                return result;
             }
         }
 
@@ -319,6 +319,22 @@ namespace SuperPengoMan
                 }
                 AddMenuTile(ScreenPos(cursorXPos, cursorYPos), option, null);
             }
+            if (keyItem.Key == KeyList.RubyTileKey.Key)
+            {
+                if (CurrentLevel.Get(cursorYPos, cursorXPos).GameObject == KeyList.RubyTileKey.Char)
+                {
+                    option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
+                }
+                AddRubyTile(ScreenPos(cursorXPos, cursorYPos), option, null);
+            }
+            if (keyItem.Key == KeyList.GoalTileKey.Key)
+            {
+                if (CurrentLevel.Get(cursorYPos, cursorXPos).GameObject == KeyList.GoalTileKey.Char)
+                {
+                    option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
+                }
+                AddGoalTile(ScreenPos(cursorXPos, cursorYPos), option, null);
+            }
             levelItem.Option = option;
             levelItem.GameObject = keyItem.Char;
         }
@@ -349,8 +365,14 @@ namespace SuperPengoMan
             Coin coin = FindCoin(cursorXPos, cursorYPos);
             coins.Remove(coin);
 
-            MenuTile mt = FindMenuTile(cursorXPos, cursorYPos);
+            OptionCollisionTile mt = FindMenuTile(cursorXPos, cursorYPos);
             menuTiles.Remove(mt);
+
+            OptionCollisionTile rt = FindRubyTile(cursorXPos, cursorYPos);
+            rubyTiles.Remove(rt);
+
+            OptionCollisionTile gt = FindGoalTile(cursorXPos, cursorYPos);
+            goalTiles.Remove(gt);
         }
 
         private FloorTile FindFlorTile(int cursorXPos, int cursorYPos)
@@ -441,10 +463,10 @@ namespace SuperPengoMan
             return result;
         }
 
-        private MenuTile FindMenuTile(int cursorXPos, int cursorYPos)
+        private OptionCollisionTile FindMenuTile(int cursorXPos, int cursorYPos)
         {
-            MenuTile result = null;
-            foreach (MenuTile menuTile in menuTiles)
+            OptionCollisionTile result = null;
+            foreach (OptionCollisionTile menuTile in menuTiles)
             {
                 if (menuTile.pos.Equals(ScreenPos(cursorXPos, cursorYPos)))
                 {
@@ -453,6 +475,33 @@ namespace SuperPengoMan
             }
             return result;
         }
+
+        private OptionCollisionTile FindRubyTile(int cursorXPos, int cursorYPos)
+        {
+            OptionCollisionTile result = null;
+            foreach (OptionCollisionTile rubyTile in rubyTiles)
+            {
+                if (rubyTile.pos.Equals(ScreenPos(cursorXPos, cursorYPos)))
+                {
+                    result = rubyTile;
+                }
+            }
+            return result;
+        }
+
+        private OptionCollisionTile FindGoalTile(int cursorXPos, int cursorYPos)
+        {
+            OptionCollisionTile result = null;
+            foreach (OptionCollisionTile goalTile in goalTiles)
+            {
+                if (goalTile.pos.Equals(ScreenPos(cursorXPos, cursorYPos)))
+                {
+                    result = goalTile;
+                }
+            }
+            return result;
+        }
+
 
         private void ChangeOptionObject(int cursorXPos, int cursorYPos, KeyItem keyItem, LevelItem levelItem)
         {
@@ -474,10 +523,22 @@ namespace SuperPengoMan
                 coin.SetOption(keyItem.Char);
             }
 
-            MenuTile mt = FindMenuTile(cursorXPos, cursorYPos);
+            OptionCollisionTile mt = FindMenuTile(cursorXPos, cursorYPos);
             if (mt != null)
             {
                 mt.SetOption(keyItem.Char);
+            }
+
+            OptionCollisionTile rt = FindRubyTile(cursorXPos, cursorYPos);
+            if (rt != null)
+            {
+                rt.SetOption(keyItem.Char);
+            }
+
+            OptionCollisionTile gt = FindGoalTile(cursorXPos, cursorYPos);
+            if (gt != null)
+            {
+                gt.SetOption(keyItem.Char);
             }
 
             levelItem.Option = keyItem.Char;
@@ -514,7 +575,7 @@ namespace SuperPengoMan
             {
                 waterTile.Draw(spriteBatch);
             }
-            foreach (MenuTile menuTile in menuTiles)
+            foreach (OptionCollisionTile menuTile in menuTiles)
             {
                 menuTile.Draw(spriteBatch);
             }

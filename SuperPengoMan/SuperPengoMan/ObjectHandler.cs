@@ -38,6 +38,9 @@ namespace SuperPengoMan
             GameObjetItems.Add(LadderKey);
             GameObjetItems.Add(CoinKey);
             GameObjetItems.Add(MenuTileKey);
+            GameObjetItems.Add(RubyTileKey);
+            GameObjetItems.Add(GoalTileKey);
+            GameObjetItems.Add(BackgroundKey);
 
             OptionItems.Add(Option0Key);
             OptionItems.Add(Option1Key);
@@ -51,8 +54,8 @@ namespace SuperPengoMan
             OptionItems.Add(Option9Key);
         }
 
-        public static KeyItem EmptyTileKey = new KeyItem('A', Keys.A);
-        public static KeyItem FloorTileKey = new KeyItem('F', Keys.F);
+        public static KeyItem EmptyTileKey  = new KeyItem('A', Keys.A);
+        public static KeyItem FloorTileKey  = new KeyItem('F', Keys.F);
         public static KeyItem PengoKey      = new KeyItem('S', Keys.S);
         public static KeyItem WaterTileKey  = new KeyItem('W', Keys.W);
         public static KeyItem TrapKey       = new KeyItem('T', Keys.T);
@@ -60,6 +63,10 @@ namespace SuperPengoMan
         public static KeyItem LadderKey     = new KeyItem('L', Keys.L);
         public static KeyItem CoinKey       = new KeyItem('C', Keys.C);
         public static KeyItem MenuTileKey   = new KeyItem('M', Keys.M);
+        public static KeyItem GoalTileKey   = new KeyItem('G', Keys.G);
+        public static KeyItem RubyTileKey   = new KeyItem('R', Keys.R);
+        public static KeyItem BackgroundKey = new KeyItem('B', Keys.B);
+
         public static KeyItem Option0Key    = new KeyItem('0', Keys.D0);
         public static KeyItem Option1Key    = new KeyItem('1', Keys.D1);
         public static KeyItem Option2Key    = new KeyItem('2', Keys.D2);
@@ -84,6 +91,8 @@ namespace SuperPengoMan
         internal Texture2D snowball;
         internal Texture2D ladderTile;
         internal Texture2D penguin_climb;
+        internal Texture2D goalTile;
+        internal Texture2D rubyTile;
 
         internal List<FloorTile> floorTiles = new List<FloorTile>();
         internal List<WaterTile> waterTiles = new List<WaterTile>();
@@ -91,17 +100,26 @@ namespace SuperPengoMan
         internal List<Enemy> enemies = new List<Enemy>();
         internal List<Ladder> ladders = new List<Ladder>();
         internal List<Coin> coins = new List<Coin>();
-        internal List<MenuTile> menuTiles = new List<MenuTile>();
-
+        internal List<OptionCollisionTile> menuTiles = new List<OptionCollisionTile>();
+        internal List<OptionCollisionTile> rubyTiles = new List<OptionCollisionTile>();
+        internal List<OptionCollisionTile> goalTiles = new List<OptionCollisionTile>();
         internal Pengo pengo = null;
+
         internal Vector2 pengoRespawnPos;
         internal Game1.AddPointsDelegate addPointsDelegate = null;
-        internal Game1.HandleMenuOptionDelegate handleMenuOptionDelegate = null;
+        internal Game1.HandleOptionDelegate handleMenuOptionDelegate = null;
+        internal Game1.HandleOptionDelegate handleGoalOptionDelegate = null;
+        internal Game1.HandleOptionDelegate handleRubyOptionDelegate = null;
 
-        public ObjectHandler(Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate)
+        public ObjectHandler(Game1.AddPointsDelegate addPointsDelegate, 
+            Game1.HandleOptionDelegate handleMenuOptionDelegate, 
+            Game1.HandleOptionDelegate handleGoalOptionDelegate,
+            Game1.HandleOptionDelegate handleRubyOptionDelegate)
         {
             this.addPointsDelegate = addPointsDelegate;
             this.handleMenuOptionDelegate = handleMenuOptionDelegate;
+            this.handleGoalOptionDelegate = handleGoalOptionDelegate;
+            this.handleRubyOptionDelegate = handleRubyOptionDelegate;
         }
 
         internal void LoadContent(ContentManager content)
@@ -118,6 +136,8 @@ namespace SuperPengoMan
             spike = content.Load<Texture2D>(@"spike");
             snowball = content.Load<Texture2D>(@"snowball");
             ladderTile = content.Load<Texture2D>(@"Ladder");
+            goalTile = content.Load<Texture2D>(@"goal");
+            rubyTile = content.Load<Texture2D>(@"ruby");
         }
 
         public void CreateLevel(Level level, int tileSize, Point StartPos)
@@ -172,6 +192,14 @@ namespace SuperPengoMan
             {
                 AddMenuTile(pos, option, handleMenuOptionDelegate);
             }
+            if (gameObject == KeyList.GoalTileKey.Char)
+            {
+                AddGoalTile(pos, option, handleGoalOptionDelegate);
+            }
+            if (gameObject == KeyList.RubyTileKey.Char)
+            {
+                AddRubyTile(pos, option, handleRubyOptionDelegate);
+            }
         }
 
         internal void AddFloortile(Vector2 pos)
@@ -211,9 +239,19 @@ namespace SuperPengoMan
             coins.Add(new Coin(coin, pos, option, addPointsDelegate));
         }
 
-        internal void AddMenuTile(Vector2 pos, char option, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate1)
+        internal void AddMenuTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleMenuOptionDelegate1)
         {
-            menuTiles.Add(new MenuTile(waterTile, pos, option, handleMenuOptionDelegate));
+            menuTiles.Add(new OptionCollisionTile(waterTile, pos, option, handleMenuOptionDelegate));
+        }
+
+        internal void AddGoalTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleGoalyOptionDelegate1)
+        {
+            goalTiles.Add(new OptionCollisionTile(goalTile, pos, option, handleGoalOptionDelegate));
+        }
+
+        internal void AddRubyTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleRubyOptionDelegate1)
+        {
+            rubyTiles.Add(new OptionCollisionTile(rubyTile, pos, option, handleRubyOptionDelegate));
         }
     }
 }

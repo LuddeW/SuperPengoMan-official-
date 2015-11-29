@@ -20,16 +20,20 @@ namespace SuperPengoMan
 
         Camera camera;
 
-        public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate) :
-            base(addPointsDelegate, handleMenuOptionDelegate)
+        public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, 
+                                Game1.HandleOptionDelegate handleMenuOptionDelegate,
+                                Game1.HandleOptionDelegate handleGoalOptionDelegate,
+                                Game1.HandleOptionDelegate handleRubyOptionDelegate) :
+                                base(addPointsDelegate, handleMenuOptionDelegate,
+                                                            handleGoalOptionDelegate,
+                                                            handleRubyOptionDelegate)
         {
             this.game = game;
         }
 
-        public Camera PengoCamera
+        public Matrix ViewMatrix
         {
-            get { return camera; }
-            set { camera = value; }
+            get { return camera.ViewMatrix; }
         }
 
         public void LoadContent()
@@ -64,9 +68,17 @@ namespace SuperPengoMan
             else
             {
                 pengo.Update();
-                foreach (MenuTile menuTile in menuTiles)
+                foreach (OptionCollisionTile menuTile in menuTiles)
                 {
                     menuTile.IsColliding(pengo.hitbox);
+                }
+                foreach (OptionCollisionTile goalTile in goalTiles)
+                {
+                    goalTile.IsColliding(pengo.hitbox);
+                }
+                foreach (OptionCollisionTile rubyTile in rubyTiles)
+                {
+                    rubyTile.IsColliding(pengo.hitbox);
                 }
                 foreach (Enemy enemy in enemies)
                 {
@@ -154,7 +166,7 @@ namespace SuperPengoMan
             {
                 waterTile.Draw(spriteBatch);
             }
-            foreach (MenuTile menuTile in menuTiles)
+            foreach (OptionCollisionTile menuTile in menuTiles)
             {
                 menuTile.Draw(spriteBatch);
             }
