@@ -47,23 +47,19 @@ namespace SuperPengoMan.GameObject
         }
 
         public void Update()
-        {
-            
+        {           
             if (pos.X < 0)
             {
                 pos.X = 0;
-            }
-          
-            MovePengo();
-            
+            }          
+            MovePengo();            
             clock.AddTime(0.03f);
         }
 
         public bool IsColliding(FloorTile floorTile)
         {
             if (hitbox.Intersects(floorTile.topHitbox))
-            {
-                
+            {              
                 currentHitState = HitState.top;
                 return true;
             }
@@ -122,8 +118,7 @@ namespace SuperPengoMan.GameObject
                     pos.X = hitbox.X;
                     break;
                 case HitState.none:
-                    break;
-                
+                    break;                
             }
             
         }
@@ -138,50 +133,10 @@ namespace SuperPengoMan.GameObject
                 speed.X = 0;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-            if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.D))
-            {
-                speed.X = +2;
-                moving = true;
-                spriteFx = SpriteEffects.None;
-            }
-            if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.D))
-            {
-                speed.X = -2;
-                moving = true;
-                spriteFx = SpriteEffects.FlipHorizontally;
-            }
-            if (keyState.IsKeyDown(Keys.Up) && isOnGround && !isOnLadder)
-            {
-                speed.Y = -6;
-                isOnGround = false;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-            }
-            if (keyState.IsKeyDown(Keys.D) && isOnGround)
-            {              
-                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                currentSprite = SpriteShow.slide;
-            }
-            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Right) && isOnGround)
-            {
-                speed.X = +4;
-                spriteFx = SpriteEffects.None;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                currentSprite = SpriteShow.slide;
-            }
-            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Left) && isOnGround)
-            {
-                speed.X = - 4;
-                spriteFx = SpriteEffects.FlipHorizontally;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                currentSprite = SpriteShow.slide;
-            }
-            if (keyState.IsKeyDown(Keys.Up) && isOnLadder)
-            {
-                speed.Y = -1;
-                isOnGround = false;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 6, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                isOnLadder = false;
-            }
+
+            HandleRightButton();
+            HandleLeftButton();
+            HandleUpButton();
 
             pos += speed;
             hitbox.X = (int)(pos.X > 0 ? pos.X + 0.5f : pos.X - 0.5f);
@@ -200,6 +155,62 @@ namespace SuperPengoMan.GameObject
                 moving = false;   
             }
             
+        }
+
+        private void HandleLeftButton()
+        {
+            if (keyState.IsKeyDown(Keys.Left) && !keyState.IsKeyDown(Keys.D))
+            {
+                speed.X = -2;
+                moving = true;
+                spriteFx = SpriteEffects.FlipHorizontally;
+            }
+            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Left) && isOnGround)
+            {
+                speed.X = -4;
+                spriteFx = SpriteEffects.FlipHorizontally;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
+            }
+        }
+
+        private void HandleRightButton()
+        {
+            if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.D))
+            {
+                speed.X = +2;
+                moving = true;
+                spriteFx = SpriteEffects.None;
+            }
+            if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Right) && isOnGround)
+            {
+                speed.X = +4;
+                spriteFx = SpriteEffects.None;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
+            }
+        }
+
+        private void HandleUpButton()
+        {
+            if (keyState.IsKeyDown(Keys.Up) && isOnGround && !isOnLadder)
+            {
+                speed.Y = -6;
+                isOnGround = false;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            }
+            if (keyState.IsKeyDown(Keys.D) && isOnGround)
+            {
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
+            }
+            if (keyState.IsKeyDown(Keys.Up) && isOnLadder)
+            {
+                speed.Y = -1;
+                isOnGround = false;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 6, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                isOnLadder = false;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

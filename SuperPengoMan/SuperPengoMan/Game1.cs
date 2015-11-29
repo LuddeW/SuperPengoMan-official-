@@ -35,7 +35,6 @@ namespace SuperPengoMan
        
         protected override void Initialize()
         {
-
             graphics.PreferredBackBufferWidth = TILE_SIZE * 15;
             graphics.PreferredBackBufferHeight = TILE_SIZE * 15;
             graphics.ApplyChanges();
@@ -50,7 +49,6 @@ namespace SuperPengoMan
             menuLevelreader = new LevelReader("MenuLevel.txt");
             handlegame.CreateLevel(menuLevelreader[0]);
         }
-
         
         protected override void UnloadContent()
         {
@@ -131,7 +129,6 @@ namespace SuperPengoMan
         private void StartHandleGame(Level level)
         {
             handlegame = new HandleGame(this, new HandleOptionDelegate(HandleMenuOption));
-            //handlegame = new HandleGame(this, new AddPointsDelegate(AddPoints), new HandleMenuOptionDelegate(HandleMenuOption));
             handlegame.LoadContent();
             handlegame.CreateLevel(level);
         }

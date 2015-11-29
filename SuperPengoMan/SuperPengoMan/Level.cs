@@ -43,7 +43,6 @@ namespace SuperPengoMan
                 row++;
             }
             return levelItemRows.Count > 0;
-
         }
 
         private void LevelFactory(char gameObject, char option, int row, int col)

@@ -198,7 +198,6 @@ namespace SuperPengoMan
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
-            spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
             foreach (Ladder ladderTile in ladder)
             {
