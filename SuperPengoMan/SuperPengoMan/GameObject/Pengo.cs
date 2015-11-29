@@ -39,28 +39,30 @@ namespace SuperPengoMan.GameObject
             this.glide = glide;
             this.jump = jump;
             this.climb = climb;
-            speed = new Vector2(1, 1);
+            speed = new Vector2(0, 0);
             windowY = Game1.TILE_SIZE * 15;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            srcRect = new Rectangle(0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             texData = new Color[texture.Width * texture.Height];
             texture.GetData(texData);
-
         }
 
         public Color[] TexData { get { return texData; }}
         public int TexWidth { get { return texture.Width; } }
 
-        public void Update()
+        public void Update(bool editMode = false)
         {
             
             if (pos.X < 0)
             {
                 pos.X = 0;
             }
-          
-            MovePengo();
-            
-            clock.AddTime(0.03f);
+
+            if (!editMode)
+            {
+                MovePengo();
+                clock.AddTime(0.03f);
+            }
         }
 
         public bool IsColliding(Rectangle topHitbox, Rectangle leftHitbox, Rectangle rightHitbox)

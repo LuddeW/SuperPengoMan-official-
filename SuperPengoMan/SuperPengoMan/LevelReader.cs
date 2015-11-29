@@ -66,5 +66,24 @@ namespace SuperPengoMan
             sw.Close();
         }
 
+
+        internal void AddLevel(char gameobject, char option, int rows, int cols)
+        {
+            Level level = new Level();
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    level.LevelFactory(gameobject, option, row, col);
+                }
+            }
+            levels.Add(level);
+        }
+
+        public void DeleteLevel(Level level)
+        {
+            levels.Remove(level);
+        }
     }
 }

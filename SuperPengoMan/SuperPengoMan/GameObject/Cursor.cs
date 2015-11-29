@@ -31,11 +31,11 @@ namespace SuperPengoMan.GameObject
         {
             if (tilePosX >= 0 && tilePosX < TilesWidth)
             {
-                pos.X = StartPos.X + (tilePosX - 1)*Step;
+                pos.X = StartPos.X + tilePosX*Step;
             }
             if (tilePosY >= 0 && tilePosY < TilesHeight)
             {
-                pos.Y = StartPos.Y + (tilePosY - 1) * Step;
+                pos.Y = StartPos.Y + tilePosY * Step;
             }
         }
 

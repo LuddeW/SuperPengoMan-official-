@@ -2,12 +2,18 @@
 using Microsoft.Xna.Framework.Graphics;
 using SuperPengoMan.GameObject;
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
 namespace SuperPengoMan
 {
     class LevelEditor: ObjectHandler
     {
+        static float TËXTOFFSET_X = 5f;
+        static float FIRST_TËXTOFFSET_Y = 5f;
+        static float ADD_TËXTOFFSET_Y = 15f;
+        static int DEFAULT_ROWS_IN_LEVEL = 15;
+
         private Game game;
 
         private Camera camera;
@@ -42,6 +48,19 @@ namespace SuperPengoMan
 
         public int EditorTileSize { get; private set; }
 
+        public Level CurrentLevel
+        {
+            get
+            {
+                Level result = null;
+                if (currentlevel < levelsLevelReader.Count)
+                {
+                    result = levelsLevelReader[currentlevel];
+                }
+                return  result;
+            }
+        }
+
         private bool WasKeyPressed(Keys key)
         {
             return keyState.IsKeyDown(key) && prevKeyState.IsKeyUp(key);
@@ -54,19 +73,31 @@ namespace SuperPengoMan
 
         public void InitEditor()
         {
-            currentlevel = -1;
+            currentlevel = 0;
             NextLevel();
         }
 
-        public void NextLevel()
+        private void NextLevel()
         {
             ResetLevel();
-            if (currentlevel < (levelsLevelReader.Count - 1))
+            currentlevel++;
+            if (currentlevel >= levelsLevelReader.Count)
             {
-                currentlevel++;
+                currentlevel = 0;
             }
 
-            CreateLevel(levelsLevelReader[currentlevel]);
+            CreateLevel(CurrentLevel);
+        }
+
+        public void PreviousLevel()
+        {
+            ResetLevel();
+            currentlevel--;
+            if (currentlevel < 0)
+            {
+                currentlevel = levelsLevelReader.Count - 1;
+            }
+            CreateLevel(CurrentLevel);
         }
 
         public void CreateLevel(Level level)
@@ -75,22 +106,86 @@ namespace SuperPengoMan
             camera.GameAreaTilesWidth = level.Cols;
             cursor.TilesWidth = level.Cols;
             cursor.TilesHeight = level.Rows;
-            cursor.SetPos(0, levelsLevelReader[currentlevel].Cols - 1);
+            int tilePosY = (CurrentLevel != null) ? CurrentLevel.Rows - 1 : 0;
+            cursor.SetPos(0, tilePosY);
             UpdateObjects();
         }
 
         private void UpdateObjects()
         {
-            pengo.Update();
+            if (pengo != null)
+            {
+                pengo.Update(true);
+            }
             foreach (Enemy enemy in enemies)
             {
-                enemy.Update();
+                enemy.Update(true);
             }
+        }
+
+        private void IncreaseCols()
+        {
+            if (CurrentLevel != null)
+            {
+                CurrentLevel.AddColumn(KeyList.EmptyTileKey.Char, KeyList.Option0Key.Char);
+                cursor.TilesWidth = CurrentLevel.Cols;
+            }
+        }
+
+        private void DecreaseCols()
+        {
+            if (CurrentLevel != null)
+            {
+                if (cursor.CursorTilePosX() == (CurrentLevel.Cols - 1))
+                {
+                    int cursorXPos = CurrentLevel.Cols - 2;
+                    if (cursorXPos < 0)
+                    {
+                        cursorXPos = 0;
+                    }
+                    cursor.SetPos(cursorXPos, cursor.CursorTilePosX());
+                }
+                for (int row = 0; row < CurrentLevel.Rows; row++)
+                {
+                    RemoveTile(CurrentLevel.Cols - 1, row);
+                    cursor.TilesWidth = CurrentLevel.Cols;
+                }
+                CurrentLevel.DeleteColumn(CurrentLevel.Cols - 1);
+            }
+        }
+
+        private void DeleteLevel()
+        {
+            if (CurrentLevel != null)
+            {
+                levelsLevelReader.DeleteLevel(CurrentLevel);
+                NextLevel();
+            }
+        }
+
+        private void AddLevel()
+        {
+            int tiles = CurrentLevel != null ? CurrentLevel.Rows : DEFAULT_ROWS_IN_LEVEL;
+            levelsLevelReader.AddLevel(KeyList.EmptyTileKey.Char, KeyList.Option0Key.Char, tiles, tiles);
+        }
+
+        private void SaveLevels()
+        {
+            throw new NotImplementedException();
         }
 
         private void ResetLevel()
         {
-
+            if (CurrentLevel != null)
+            {
+                for (int row = 0; row < CurrentLevel.Rows; row++)
+                {
+                    for (int col = 0; col < CurrentLevel.Cols; col++)
+                    {
+                        RemoveTile(col, row);
+                    }
+                }
+            }
         }
 
         public void Update()
@@ -108,29 +203,66 @@ namespace SuperPengoMan
             Keys[] keys = keyState.GetPressedKeys();
             if(keys.Length > 0)
             { 
-                CheckKeys(cursor.CursorTilePosX(),cursor.CursorTilePosY());
+                CheckKeys(cursor.CursorTilePosX(),cursor.CursorTilePosY(), keys);
             }
         }
 
-        private void CheckKeys(int cursorXPos, int cursorYPos)
+        private void CheckKeys(int cursorXPos, int cursorYPos, Keys[] keys)
         {
-            foreach (KeyItem keyItem in KeyList.GameObjetItems)
+            if (keys.Length == 1 && CurrentLevel != null)
             {
-                if (keyItem.Key != KeyList.MenuTileKey.Key && WasKeyPressed(keyItem.Key))
+                foreach (KeyItem keyItem in KeyList.GameObjetItems)
                 {
-                    LevelItem levelItem = levelsLevelReader[currentlevel].Get(cursorYPos, cursorXPos);
-                    ChangeTileObject(cursorXPos, cursorYPos, keyItem, levelItem);
-                }
+                    if (keyItem.Key != KeyList.MenuTileKey.Key && WasKeyPressed(keyItem.Key))
+                    {
+                        LevelItem levelItem = CurrentLevel.Get(cursorYPos, cursorXPos);
+                        ChangeTileObject(cursorXPos, cursorYPos, keyItem, levelItem);
+                    }
 
+                }
+                foreach (KeyItem keyItem in KeyList.OptionItems)
+                {
+                    if (WasKeyPressed(keyItem.Key))
+                    {
+                        LevelItem levelItem = CurrentLevel.Get(cursorYPos, cursorXPos);
+                        ChangeOptionObject(cursorXPos, cursorYPos, keyItem, levelItem);
+                    }
+
+                }
             }
-            foreach (KeyItem keyItem in KeyList.OptionItems)
+            else
             {
-                if (WasKeyPressed(keyItem.Key))
+                if(keys.Contains(Keys.LeftControl))
                 {
-                    LevelItem levelItem = levelsLevelReader[currentlevel].Get(cursorYPos, cursorXPos);
-                    ChangeOptionObject(cursorXPos, cursorYPos, keyItem, levelItem);
+                    if (WasKeyPressed(Keys.S))
+                    {
+                        SaveLevels();
+                    }
+                    if (WasKeyPressed(Keys.N))
+                    {
+                        AddLevel();
+                    }
+                    if (WasKeyPressed(Keys.Left) && keys.Contains(Keys.LeftAlt) && CurrentLevel != null)
+                    {
+                        DecreaseCols();
+                    }
+                    if (WasKeyPressed(Keys.Right) && keys.Contains(Keys.LeftAlt) && CurrentLevel != null)
+                    {
+                        IncreaseCols();
+                    }
+                    if (WasKeyPressed(Keys.Up) && keys.Contains(Keys.LeftAlt) && CurrentLevel != null)
+                    {
+                        NextLevel();
+                    }
+                    if (WasKeyPressed(Keys.Down) && keys.Contains(Keys.LeftAlt) && CurrentLevel != null)
+                    {
+                        PreviousLevel();
+                    }
+                    if (WasKeyPressed(Keys.D) && keys.Contains(Keys.LeftShift) && CurrentLevel != null)
+                    {
+                        DeleteLevel();
+                    }
                 }
-
             }
         }
 
@@ -146,6 +278,10 @@ namespace SuperPengoMan
             if (keyItem.Key == KeyList.PengoKey.Key)
             {
                 NewPengo(ScreenPos(cursorXPos, cursorYPos));
+                if (pengo != null)
+                {
+                    pengo.Update(true);
+                }
             }
             if (keyItem.Key == KeyList.WaterTileKey.Key)
             {
@@ -157,7 +293,11 @@ namespace SuperPengoMan
             }
             if (keyItem.Key == KeyList.EnemyKey.Key)
             {
-                AddEnemy(ScreenPos(cursorXPos, cursorYPos));
+                Enemy enemy = AddEnemy(ScreenPos(cursorXPos, cursorYPos));
+                if (enemy != null)
+                {
+                    enemy.Update(true);
+                }
             }
             if (keyItem.Key == KeyList.LadderKey.Key)
             {
@@ -165,17 +305,17 @@ namespace SuperPengoMan
             }
             if (keyItem.Key == KeyList.CoinKey.Key)
             {
-                if (levelsLevelReader[currentlevel].Get(cursorXPos, cursorYPos).GameObject == KeyList.CoinKey.Char)
+                if (CurrentLevel.Get(cursorXPos, cursorYPos).GameObject == KeyList.CoinKey.Char)
                 {
-                    option = levelsLevelReader[currentlevel].Get(cursorYPos, cursorXPos).Option;
+                    option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
                 }
                 AddCoin(ScreenPos(cursorXPos, cursorYPos), option, null);
             }
             if (keyItem.Key == KeyList.MenuTileKey.Key)
             {
-                if (levelsLevelReader[currentlevel].Get(cursorYPos, cursorXPos).GameObject == KeyList.MenuTileKey.Char)
+                if (CurrentLevel.Get(cursorYPos, cursorXPos).GameObject == KeyList.MenuTileKey.Char)
                 {
-                    option = levelsLevelReader[currentlevel].Get(cursorYPos, cursorXPos).Option;
+                    option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
                 }
                 AddMenuTile(ScreenPos(cursorXPos, cursorYPos), option, null);
             }
@@ -229,7 +369,7 @@ namespace SuperPengoMan
         private Pengo FindPengo(int cursorXPos, int cursorYPos)
         {
             Pengo result = null;
-            if (pengo.pos.Equals(ScreenPos(cursorXPos, cursorYPos)))
+            if (pengo!=null && pengo.pos.Equals(ScreenPos(cursorXPos, cursorYPos)))
             {
                 result = pengo;
             }
@@ -386,27 +526,30 @@ namespace SuperPengoMan
 
         private void DrawGrid(SpriteBatch spriteBatch)
         {
-            Texture2D tex = new Texture2D(game.GraphicsDevice, 1, 1);
-            tex.SetData<Color>(
-                new Color[] { Color.White });// fill the texture with white
+            if (CurrentLevel != null)
+            {
+                Texture2D tex = new Texture2D(game.GraphicsDevice, 1, 1);
+                tex.SetData<Color>(
+                    new Color[] {Color.White}); // fill the texture with white
 
-            for (int rows = 0; rows <= levelsLevelReader[currentlevel].Rows; rows++)
-            {
-                DrawLine(spriteBatch, tex,//draw line
-                    new Vector2(gameAreaStartPos.X, 
-                                    gameAreaStartPos.Y + rows * EditorTileSize), //start of line
-                    new Vector2(gameAreaStartPos.X + levelsLevelReader[currentlevel].Cols * EditorTileSize,
-                                    gameAreaStartPos.Y + rows * EditorTileSize), //end of line
-                                    Color.Black);
-            }
-            for (int cols = 0; cols <= levelsLevelReader[currentlevel].Cols; cols++)
-            {
-                DrawLine(spriteBatch, tex,//draw line
-                    new Vector2(gameAreaStartPos.X + cols * EditorTileSize,
-                                    gameAreaStartPos.Y), //start of line
-                    new Vector2(gameAreaStartPos.X + cols * EditorTileSize,
-                                    gameAreaStartPos.Y + levelsLevelReader[currentlevel].Rows * EditorTileSize), //end of line
-                                    Color.Black);
+                for (int rows = 0; rows <= CurrentLevel.Rows; rows++)
+                {
+                    DrawLine(spriteBatch, tex, //draw line
+                        new Vector2(gameAreaStartPos.X,
+                            gameAreaStartPos.Y + rows*EditorTileSize), //start of line
+                        new Vector2(gameAreaStartPos.X + CurrentLevel.Cols*EditorTileSize,
+                            gameAreaStartPos.Y + rows*EditorTileSize), //end of line
+                        Color.Black);
+                }
+                for (int cols = 0; cols <= CurrentLevel.Cols; cols++)
+                {
+                    DrawLine(spriteBatch, tex, //draw line
+                        new Vector2(gameAreaStartPos.X + cols*EditorTileSize,
+                            gameAreaStartPos.Y), //start of line
+                        new Vector2(gameAreaStartPos.X + cols*EditorTileSize,
+                            gameAreaStartPos.Y + CurrentLevel.Rows*EditorTileSize), //end of line
+                        Color.Black);
+                }
             }
         }
 
@@ -433,22 +576,59 @@ namespace SuperPengoMan
 
         }
 
-        readonly float TËXTOFFSET_X = 5f;
-        readonly float TILE_TËXTOFFSET_Y = 5f;
-        readonly float OPTION_TËXTOFFSET_Y = 20f;
-
         private void DrawTileData(SpriteBatch spriteBatch, int tilePosX, int tilePosY)
         {
-            LevelItem levelItem = levelsLevelReader[currentlevel].Get(tilePosY, tilePosX);
-            string tile = "Tile: " + levelItem.GameObject;
-            spriteBatch.DrawString(hudFont, tile,
-                new Vector2(TËXTOFFSET_X - camera.ViewMatrix.Translation.X, 
-                gameAreaStartPos.Y + EditorTileSize * levelsLevelReader[currentlevel].Rows + TILE_TËXTOFFSET_Y), Color.White);
-            string option = "Option: " + levelItem.Option;
-            spriteBatch.DrawString(hudFont, option,
-                new Vector2(TËXTOFFSET_X - camera.ViewMatrix.Translation.X, 
-                gameAreaStartPos.Y + EditorTileSize * levelsLevelReader[currentlevel].Rows + OPTION_TËXTOFFSET_Y), Color.White);
+            if (CurrentLevel != null)
+            {
+                string text;
+
+                LevelItem levelItem = CurrentLevel.Get(tilePosY, tilePosX);
+                text = "Tile: " + levelItem.GameObject;
+                DrawString(spriteBatch, text, 0);
+
+                text = "Option: " + levelItem.Option;
+                DrawString(spriteBatch, text, 1);
+
+                text = "CurrentLevel: " + currentlevel;
+                DrawString(spriteBatch, text, 2);
+
+                text = "Cols: " + CurrentLevel.Cols + " Rows: " + CurrentLevel.Rows;
+                DrawString(spriteBatch, text, 3);
+
+                text = "X: " + cursor.CursorTilePosX() + " Y: " + cursor.CursorTilePosY();
+                DrawString(spriteBatch, text, 4);
+
+                text = "Levels: " + levelsLevelReader.Count;
+                DrawString(spriteBatch, text, 5);
+
+                text = "Ctrl-S: Save to file";
+                DrawString(spriteBatch, text, 6);
+
+                text = "Ctrl-N: New level";
+                DrawString(spriteBatch, text, 7);
+
+                text = "Alt-Crtl-LeftArrow: Decrease columns";
+                DrawString(spriteBatch, text, 8);
+
+                text = "Alt-Ctrl-RightArrow: Increase columns";
+                DrawString(spriteBatch, text, 9);
+
+                text = "Alt-Crtl-UpArrow: Next level";
+                DrawString(spriteBatch, text, 10);
+
+                text = "Alt-Ctrl-DownArrow: Previous level";
+                DrawString(spriteBatch, text, 11);
+
+                text = "Shift-Ctrl-D: Delete level";
+                DrawString(spriteBatch, text, 12);
+            }
         }
 
+        private void DrawString(SpriteBatch spriteBatch, string textString, int textRow)
+        {
+            spriteBatch.DrawString(hudFont, textString,
+                new Vector2(TËXTOFFSET_X - camera.ViewMatrix.Translation.X,
+                gameAreaStartPos.Y + EditorTileSize * CurrentLevel.Rows + FIRST_TËXTOFFSET_Y + ADD_TËXTOFFSET_Y * textRow), Color.White);
+        }
     }
 }

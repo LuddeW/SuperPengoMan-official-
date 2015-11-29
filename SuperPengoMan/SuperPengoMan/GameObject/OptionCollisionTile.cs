@@ -7,15 +7,15 @@ using System.Text;
 
 namespace SuperPengoMan.GameObject
 {
-    class MenuTile : GameObject
+    class OptionCollisionTile : GameObject
     {
-        char menuOption;
-        Game1.HandleMenuOptionDelegate handleMenuOptionDelegate;
+        char option;
+        Game1.HandleOptionDelegate handleOptionDelegate;
 
-        public MenuTile(Texture2D texture, Vector2 pos, char option, Game1.HandleMenuOptionDelegate handleMenuOptionDelegate) : base(texture, pos)
+        public OptionCollisionTile(Texture2D texture, Vector2 pos, char option, Game1.HandleOptionDelegate handleOptionDelegate) : base(texture, pos)
         {
-            this.menuOption = option;
-            this.handleMenuOptionDelegate = handleMenuOptionDelegate;
+            this.option = option;
+            this.handleOptionDelegate = handleOptionDelegate;
             Hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
         }
 
@@ -23,12 +23,12 @@ namespace SuperPengoMan.GameObject
 
         public void SetOption(char option)
         {
-            menuOption = option;
+            this.option = option;
         }
 
         void HandleCollision()
         {
-            handleMenuOptionDelegate(menuOption);
+            handleOptionDelegate(option);
         }
 
         public bool IsColliding(Rectangle hitbox)

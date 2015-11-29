@@ -194,9 +194,11 @@ namespace SuperPengoMan
             traps.Add(new Trap(spike, pos));
         }
 
-        internal void AddEnemy(Vector2 pos)
+        internal Enemy AddEnemy(Vector2 pos)
         {
-            enemies.Add(new Enemy(snowball, pos));
+            Enemy result = new Enemy(snowball, pos);
+            enemies.Add(result);
+            return result;
         }
 
         internal void AddLadder(Vector2 pos)

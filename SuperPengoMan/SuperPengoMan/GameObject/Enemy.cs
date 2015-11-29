@@ -22,16 +22,18 @@ namespace SuperPengoMan.GameObject
         int animate = 1;
         public Enemy(Texture2D texture, Vector2 pos) : base(texture, pos)
         {           
-            clock = new Clock(); 
+            clock = new Clock();
         }
-        
-        public void Update()
+
+        public void Update(bool editMode = false)
         {
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, texture.Height);
             topHitbox = new Rectangle((int)pos.X + 5, (int)pos.Y-5, Game1.TILE_SIZE - 10, 5);
-            clock.AddTime(0.03f);
-            Animate();
-            pos.X += speed;
+            if( !editMode)
+            {
+                clock.AddTime(0.03f);
+                pos.X += speed;
+            }
         }
 
         public bool IsColliding(Rectangle leftHitbox, Rectangle rightHitbox)

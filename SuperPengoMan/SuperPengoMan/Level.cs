@@ -46,7 +46,7 @@ namespace SuperPengoMan
 
         }
 
-        private void LevelFactory(char gameObject, char option, int row, int col)
+        internal void LevelFactory(char gameObject, char option, int row, int col)
         {
             if (levelItemRows == null)
             {
@@ -91,6 +91,26 @@ namespace SuperPengoMan
                     buf[ix++] = levelItem.Option;
                 }
                 sw.WriteLine(buf);
+            }
+        }
+
+        public void AddColumn(char gameObject, char option)
+        {
+            int col = Cols;
+            for (int row = 0; row < Rows; row++)
+            {
+                LevelFactory(gameObject, option, row, col);
+            }
+        }
+
+        public void DeleteColumn(int col)
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                if (col < levelItemRows[row].Count)
+                {
+                    levelItemRows[row].RemoveAt(col);
+                }
             }
         }
     }
