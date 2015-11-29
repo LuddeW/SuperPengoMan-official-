@@ -34,23 +34,23 @@ namespace SuperPengoMan
         List<WaterTile> watertile = new List<WaterTile>();
         List<Trap> trap = new List<Trap>();
         List<Ladder> ladder = new List<Ladder>();
+        List<OptionCollisionTile> menuTiles = new List<OptionCollisionTile>();
+
+        Game1.HandleOptionDelegate handleOptionDelegate;
 
         Pengo pengo;
         Enemy enemy;
         Camera camera;
 
-        //MenuLevel menuLevel;
-
-        public HandleGame(Game game)
+        public HandleGame(Game game, Game1.HandleOptionDelegate handleOptionDelegate)
         {
             this.game = game;
-            //menuLevel = new MenuLevel(game);
+            this.handleOptionDelegate = handleOptionDelegate;
+            
         }
        
         public void LoadContent()
         {
-
-
             penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
             penguin_jump = game.Content.Load<Texture2D>(@"penguin_jump");
             penguin_glide = game.Content.Load<Texture2D>(@"penguin_glide");
@@ -62,16 +62,21 @@ namespace SuperPengoMan
             spike = game.Content.Load<Texture2D>(@"spike");
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
-            backgrounds = new Background(game.Content, game.Window);
-            CreateObjectFactory();
-           
+            backgrounds = new Background(game.Content, game.Window);          
             camera = new Camera();
         }
 
+        public Matrix ViewMatrix()
+        {
+            return camera.ViewMatrix;
+        }
         public void Update()
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 game.Exit();
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Back))
+                handleOptionDelegate('2');
             pengo.Update();
             enemy.Update();
             foreach (FloorTile iceTile in floortile)
@@ -99,6 +104,10 @@ namespace SuperPengoMan
                     pengo.isOnLadder = true;
                 }
             }
+            foreach (OptionCollisionTile menuTile in menuTiles)
+            {
+                menuTile.IsColliding(pengo.hitbox);
+            }
             backgrounds.Update();
             
             if (enemy.hitbox.Intersects(pengo.hitbox) && pengo.speed.Y >= 5)
@@ -113,28 +122,21 @@ namespace SuperPengoMan
             {
                 pengo.KillPengo(pengoRespawnPos);
             }
-            camera.Update(pengo.pos);
-            
+            camera.Update(pengo.pos);           
         }
 
-
-
-        private void CreateObjectFactory()
+        public void CreateLevel(Level level)
         {
-            StreamReader sr = new StreamReader(@"Level1.txt");
-            int row = 0;
-            while (!sr.EndOfStream)
+            for (int row = 0; row < level.Rows; row++)
             {
-                string objectStr = sr.ReadLine();
-                for (int col = 0; col < objectStr.Length; col++)
+                for (int col = 0; col < level.Cols; col++)
                 {
-                    ObjectFactory(objectStr[col], row, col);
+                    ObjectFactory(level.Get(row, col).GameObject, level.Get(row, col).Option, row, col);
                 }
-                row++;
             }
         }
 
-        private void ObjectFactory(char objectChar, int row, int col)
+        private void ObjectFactory(char objectChar, char option, int row, int col)
         {
             Vector2 pos = new Vector2(Game1.TILE_SIZE * col, Game1.TILE_SIZE * row);
             switch (objectChar)
@@ -158,7 +160,9 @@ namespace SuperPengoMan
                 case 'L':
                     ladder.Add(new Ladder(ladderTile, pos));
                     break;
-
+                case 'M':
+                    menuTiles.Add(new OptionCollisionTile(waterTile, pos, option, handleOptionDelegate));
+                    break;
             }
         }
 
@@ -169,7 +173,6 @@ namespace SuperPengoMan
 
         public void Draw(SpriteBatch spriteBatch)
         {
-
             spriteBatch.Draw(background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
             spriteBatch.Draw(caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
             backgrounds.Draw(spriteBatch);
@@ -190,6 +193,10 @@ namespace SuperPengoMan
             foreach (Trap spike in trap)
             {
                 spike.Draw(spriteBatch);
+            }
+            foreach (OptionCollisionTile menuTile in menuTiles)
+            {
+                menuTile.Draw(spriteBatch);
             }
         }
     }

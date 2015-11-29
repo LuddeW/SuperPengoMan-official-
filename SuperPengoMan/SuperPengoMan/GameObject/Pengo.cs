@@ -17,6 +17,7 @@ namespace SuperPengoMan.GameObject
         private Texture2D jump;
         private Texture2D climb;
         KeyboardState keyState;
+        public Color[] texData;
 
         private enum HitState { top, left, right, none }
         HitState currentHitState = HitState.none;
@@ -41,6 +42,8 @@ namespace SuperPengoMan.GameObject
             speed = new Vector2(1, 1);
             windowY = Game1.TILE_SIZE * 15;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
+            texData = new Color[texture.Width * texture.Height];
+            texture.GetData(texData);
         }
 
         public void Update()
@@ -201,7 +204,7 @@ namespace SuperPengoMan.GameObject
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-                    spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);              
+            spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);              
         }
 
         private int PengoAnimation()
