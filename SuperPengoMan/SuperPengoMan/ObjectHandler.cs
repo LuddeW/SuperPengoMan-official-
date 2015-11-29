@@ -81,18 +81,18 @@ namespace SuperPengoMan
 
     internal class ObjectHandler
     {
-        internal Texture2D coin;
-        internal Texture2D penguin;
-        internal Texture2D penguin_jump;
-        internal Texture2D penguin_glide;
-        internal Texture2D iceTile;
-        internal Texture2D waterTile;
-        internal Texture2D spike;
-        internal Texture2D snowball;
-        internal Texture2D ladderTile;
-        internal Texture2D penguin_climb;
-        internal Texture2D goalTile;
-        internal Texture2D rubyTile;
+        internal Texture2D texCoin;
+        internal Texture2D texPenguin;
+        internal Texture2D texPenguin_jump;
+        internal Texture2D texPenguin_glide;
+        internal Texture2D texIceTile;
+        internal Texture2D texWaterTile;
+        internal Texture2D texSpike;
+        internal Texture2D texSnowball;
+        internal Texture2D texLadderTile;
+        internal Texture2D texPenguin_climb;
+        internal Texture2D texGoalTile;
+        internal Texture2D texRubyTile;
 
         internal List<FloorTile> floorTiles = new List<FloorTile>();
         internal List<WaterTile> waterTiles = new List<WaterTile>();
@@ -126,18 +126,18 @@ namespace SuperPengoMan
         {
             String s = Directory.GetCurrentDirectory();
 
-            coin = content.Load<Texture2D>(@"coin");
-            penguin = content.Load<Texture2D>(@"penguin_spritesheet");
-            penguin_jump = content.Load<Texture2D>(@"penguin_jump");
-            penguin_glide = content.Load<Texture2D>(@"penguin_glide");
-            penguin_climb = content.Load<Texture2D>(@"penguin_climb");
-            iceTile = content.Load<Texture2D>(@"ice_tile");
-            waterTile = content.Load<Texture2D>(@"water_tile");
-            spike = content.Load<Texture2D>(@"spike");
-            snowball = content.Load<Texture2D>(@"snowball");
-            ladderTile = content.Load<Texture2D>(@"Ladder");
-            goalTile = content.Load<Texture2D>(@"goal");
-            rubyTile = content.Load<Texture2D>(@"ruby");
+            texCoin = content.Load<Texture2D>(@"Coin");
+            texPenguin = content.Load<Texture2D>(@"penguin_spritesheet");
+            texPenguin_jump = content.Load<Texture2D>(@"Penguin_jump");
+            texPenguin_glide = content.Load<Texture2D>(@"Penguin_glide");
+            texPenguin_climb = content.Load<Texture2D>(@"Penguin_climb");
+            texIceTile = content.Load<Texture2D>(@"ice_tile");
+            texWaterTile = content.Load<Texture2D>(@"water_tile");
+            texSpike = content.Load<Texture2D>(@"Spike");
+            texSnowball = content.Load<Texture2D>(@"Snowball");
+            texLadderTile = content.Load<Texture2D>(@"Ladder");
+            texGoalTile = content.Load<Texture2D>(@"goal");
+            texRubyTile = content.Load<Texture2D>(@"ruby");
         }
 
         public void CreateLevel(Level level, int tileSize, Point StartPos)
@@ -204,54 +204,54 @@ namespace SuperPengoMan
 
         internal void AddFloortile(Vector2 pos)
         {
-            floorTiles.Add(new FloorTile(iceTile, pos));
+            floorTiles.Add(new FloorTile(texIceTile, pos));
         }
 
         internal void NewPengo(Vector2 pos)
         {
-            pengo = new Pengo(penguin, penguin_glide, penguin_jump, penguin_climb, pos);
+            pengo = new Pengo(texPenguin, texPenguin_glide, texPenguin_jump, texPenguin_climb, pos);
         }
 
         internal void AddWaterTile(Vector2 pos)
         {
-            waterTiles.Add(new WaterTile(waterTile, pos));
+            waterTiles.Add(new WaterTile(texWaterTile, pos));
         }
 
         internal void AddTrap(Vector2 pos)
         {
-            traps.Add(new Trap(spike, pos));
+            traps.Add(new Trap(texSpike, pos));
         }
 
         internal Enemy AddEnemy(Vector2 pos)
         {
-            Enemy result = new Enemy(snowball, pos);
+            Enemy result = new Enemy(texSnowball, pos);
             enemies.Add(result);
             return result;
         }
 
         internal void AddLadder(Vector2 pos)
         {
-            ladders.Add(new Ladder(ladderTile, pos));
+            ladders.Add(new Ladder(texLadderTile, pos));
         }
 
         internal void AddCoin(Vector2 pos, char option, Game1.AddPointsDelegate addPointsDelegate1)
         {
-            coins.Add(new Coin(coin, pos, option, addPointsDelegate));
+            coins.Add(new Coin(texCoin, pos, option, addPointsDelegate));
         }
 
         internal void AddMenuTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleMenuOptionDelegate1)
         {
-            menuTiles.Add(new OptionCollisionTile(waterTile, pos, option, handleMenuOptionDelegate));
+            menuTiles.Add(new OptionCollisionTile(texWaterTile, pos, option, handleMenuOptionDelegate));
         }
 
         internal void AddGoalTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleGoalyOptionDelegate1)
         {
-            goalTiles.Add(new OptionCollisionTile(goalTile, pos, option, handleGoalOptionDelegate));
+            goalTiles.Add(new OptionCollisionTile(texGoalTile, pos, option, handleGoalOptionDelegate));
         }
 
         internal void AddRubyTile(Vector2 pos, char option, Game1.HandleOptionDelegate handleRubyOptionDelegate1)
         {
-            rubyTiles.Add(new OptionCollisionTile(rubyTile, pos, option, handleRubyOptionDelegate));
+            rubyTiles.Add(new OptionCollisionTile(texRubyTile, pos, option, handleRubyOptionDelegate));
         }
     }
 }

@@ -170,6 +170,14 @@ namespace SuperPengoMan
             {
                 menuTile.Draw(spriteBatch);
             }
+            foreach (OptionCollisionTile goalTile in goalTiles)
+            {
+                goalTile.Draw(spriteBatch);
+            }
+            foreach (OptionCollisionTile rubyTile in rubyTiles)
+            {
+                rubyTile.Draw(spriteBatch);
+            }
         }
     }
 }

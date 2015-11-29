@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SuperPengoMan.GameObject
 {
-    class Pengo:GameObject
+    class Pengo : GameObject
     {
         public Rectangle srcRect;
         private Clock clock;
@@ -17,10 +17,11 @@ namespace SuperPengoMan.GameObject
         private Texture2D jump;
         private Texture2D climb;
         KeyboardState keyState;
+        public Color[] texData;
 
         private enum HitState { top, left, right, none }
         HitState currentHitState = HitState.none;
-        private enum SpriteShow { hor, slide, jump, climb}
+        private enum SpriteShow { hor, slide, jump, climb }
         private SpriteShow currentSprite = SpriteShow.hor;
         private int pengoAnimation = 0;
         private bool isOnGround = false;
@@ -30,8 +31,6 @@ namespace SuperPengoMan.GameObject
         private bool moving = false;
         private SpriteEffects spriteFx = SpriteEffects.None;
         public bool isOnLadder = false;
-
-        Color[] texData;
 
         public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Texture2D climb, Vector2 pos) : base(texture, pos)
         {
@@ -47,12 +46,13 @@ namespace SuperPengoMan.GameObject
             texture.GetData(texData);
         }
 
-        public Color[] TexData { get { return texData; }}
+        public Color[] TexData { get { return texData; } }
         public int TexWidth { get { return texture.Width; } }
 
-        public void Update(bool editMode = false)
+
+        public void Update(bool editMode=false)
         {
-            
+
             if (pos.X < 0)
             {
                 pos.X = 0;
@@ -69,7 +69,7 @@ namespace SuperPengoMan.GameObject
         {
             if (hitbox.Intersects(topHitbox))
             {
-                
+
                 currentHitState = HitState.top;
                 return true;
             }
@@ -90,7 +90,7 @@ namespace SuperPengoMan.GameObject
             }
         }
 
-        public void HandleCollision(Rectangle collideHitbox)
+        public void HandleCollision(Rectangle topHitbox)
         {
             switch (currentHitState)
             {
@@ -98,7 +98,7 @@ namespace SuperPengoMan.GameObject
                     isOnGround = true;
                     speed.Y = 5.0f;
                     speed.X = 0;
-                    hitbox.Y = collideHitbox.Y - hitbox.Height;
+                    hitbox.Y = topHitbox.Y - hitbox.Height;
                     pos.Y = hitbox.Y;
                     break;
                 case HitState.left:
@@ -124,14 +124,14 @@ namespace SuperPengoMan.GameObject
                     {
                         speed.X = 0;
                         hitbox.X = hitbox.X + 2;
-                    }                   
+                    }
                     pos.X = hitbox.X;
                     break;
                 case HitState.none:
                     break;
-                
+
             }
-            
+
         }
 
         private void MovePengo()
@@ -142,8 +142,7 @@ namespace SuperPengoMan.GameObject
             {
                 speed.Y += 0.3f;
                 speed.X = 0;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                currentSprite = SpriteShow.jump;
+                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.Right) && !keyState.IsKeyDown(Keys.D))
             {
@@ -161,34 +160,32 @@ namespace SuperPengoMan.GameObject
             {
                 speed.Y = -6;
                 isOnGround = false;
-                currentSprite = SpriteShow.jump;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.D) && isOnGround)
-            {              
+            {
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 currentSprite = SpriteShow.slide;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
             if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Right) && isOnGround)
             {
                 speed.X = +4;
-                currentSprite = SpriteShow.slide;
                 spriteFx = SpriteEffects.None;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
             }
             if (keyState.IsKeyDown(Keys.D) && keyState.IsKeyDown(Keys.Left) && isOnGround)
             {
-                speed.X = - 4;
-                currentSprite = SpriteShow.slide;
+                speed.X = -4;
                 spriteFx = SpriteEffects.FlipHorizontally;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 5, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                currentSprite = SpriteShow.slide;
             }
             if (keyState.IsKeyDown(Keys.Up) && isOnLadder)
             {
                 speed.Y = -1;
                 isOnGround = false;
-                currentSprite = SpriteShow.climb;
-                srcRect = new Rectangle(Game1.TILE_SIZE * 0, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
+                srcRect = new Rectangle(Game1.TILE_SIZE * 6, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 isOnLadder = false;
             }
 
@@ -206,28 +203,14 @@ namespace SuperPengoMan.GameObject
             if (isOnGround && moving)
             {
                 srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
-                moving = false;   
+                moving = false;
             }
-            
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            switch (currentSprite)
-            {
-                case SpriteShow.hor:
-                    Draw(spriteBatch, texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.slide:
-                    Draw(spriteBatch, glide, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.jump:
-                    Draw(spriteBatch, jump, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-                case SpriteShow.climb:
-                    Draw(spriteBatch, climb, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
-                    break;
-            }
+            Draw(spriteBatch, texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);
         }
 
         private int PengoAnimation()
@@ -245,7 +228,7 @@ namespace SuperPengoMan.GameObject
         }
 
         public void KillPengo(Vector2 pengoRespawnPos)
-        {         
+        {
             pos = pengoRespawnPos;
         }
 
