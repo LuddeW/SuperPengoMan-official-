@@ -19,7 +19,6 @@ namespace SuperPengoMan.GameObject
             topHitbox = new Rectangle((int)pos.X + 4, (int)pos.Y - 2, texture.Width - 8, 2);
             leftHitbox = new Rectangle((int)pos.X, (int)pos.Y + 3, texture.Width / 2, texture.Height - 1);
             rightHitbox = new Rectangle((int)pos.X + texture.Width / 2, (int)pos.Y + 3, texture.Width / 2, texture.Height - 1);
-
         }
     }
 }

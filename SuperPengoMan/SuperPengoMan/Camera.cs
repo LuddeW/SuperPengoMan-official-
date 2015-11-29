@@ -22,9 +22,7 @@ namespace SuperPengoMan
 
         public void Update(Vector2 pengoPos)
         {
-            position.X = pengoPos.X - (ScreenWidth / 2);
-            
-
+            position.X = pengoPos.X - (ScreenWidth / 2);            
             if (position.X < 0)
             {
                 position.X = 0;
@@ -33,7 +31,6 @@ namespace SuperPengoMan
             {
                 position.X = Game1.TILE_SIZE * 49 - ScreenWidth;
             }
-
             viewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));
         }
     }

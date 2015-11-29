@@ -14,10 +14,5 @@ namespace SuperPengoMan.GameObject
         {
             hitbox = new Rectangle((int)pos.X + texture.Width -5, (int)pos.Y, 5, texture.Height + 5);
         }
-
-        //public override void Draw(SpriteBatch spriteBatch)
-        //{
-        //    spriteBatch.Draw(texture, hitbox, Color.Red);
-        //}
     }
 }

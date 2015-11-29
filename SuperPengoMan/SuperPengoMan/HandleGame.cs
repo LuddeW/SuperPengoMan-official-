@@ -187,6 +187,10 @@ namespace SuperPengoMan
                 case 'M':
                     menuTiles.Add(new OptionCollisionTile(waterTile, pos, option, handleOptionDelegate));
                     break;
+                case 'B':
+                    int optionValue = option == '0' ? 0 : 1;
+                    backgrounds.EnableBackground(option * Convert.ToInt32(Math.Pow(2,col)));
+                    break;
             }
         }
 

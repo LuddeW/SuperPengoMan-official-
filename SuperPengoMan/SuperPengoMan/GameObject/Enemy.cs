@@ -74,7 +74,6 @@ namespace SuperPengoMan.GameObject
         {
             srcRect = new Rectangle(Game1.TILE_SIZE * Animate(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             spriteBatch.Draw(texture, hitbox, srcRect, Color.White);
-
         }
 
         private int Animate()

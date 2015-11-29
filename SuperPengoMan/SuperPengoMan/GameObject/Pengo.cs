@@ -119,8 +119,7 @@ namespace SuperPengoMan.GameObject
                     break;
                 case HitState.none:
                     break;                
-            }
-            
+            }          
         }
 
         private void MovePengo()
@@ -133,7 +132,6 @@ namespace SuperPengoMan.GameObject
                 speed.X = 0;
                 srcRect = new Rectangle(Game1.TILE_SIZE * 4, 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
             }
-
             HandleRightButton();
             HandleLeftButton();
             HandleUpButton();
@@ -141,7 +139,6 @@ namespace SuperPengoMan.GameObject
             pos += speed;
             hitbox.X = (int)(pos.X > 0 ? pos.X + 0.5f : pos.X - 0.5f);
             hitbox.Y = (int)(pos.Y > 0 ? pos.Y + 0.5f : pos.Y - 0.5f);
-
             if (hitbox.Y + hitbox.Height >= windowY)
             {
                 pos.Y = windowY - hitbox.Height;
@@ -153,8 +150,7 @@ namespace SuperPengoMan.GameObject
             {
                 srcRect = new Rectangle(Game1.TILE_SIZE * PengoAnimation(), 0, Game1.TILE_SIZE, Game1.TILE_SIZE);
                 moving = false;   
-            }
-            
+            }          
         }
 
         private void HandleLeftButton()

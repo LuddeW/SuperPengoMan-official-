@@ -14,14 +14,18 @@ namespace SuperPengoMan
         int fgSpacing, mgSpacing;
         float fgSpeed, mgSpeed;
         Texture2D[] texture;
+        Texture2D startSign;
+        Texture2D levelEditorSign;
         GameWindow window;
+        int enbaledBackgrounds;
         public Background(ContentManager Content, GameWindow window)
         {
             this.window = window;
             this.texture = new Texture2D[2];
-
             texture[0] = Content.Load<Texture2D>(@"cloud");
             texture[1] = Content.Load<Texture2D>(@"big_cloud");
+            startSign = Content.Load<Texture2D>(@"start_sign");
+            levelEditorSign = Content.Load<Texture2D>(@"leveleditor_sign");
             CreatForeGround();
             CreatMiddleGround();
         }
@@ -34,14 +38,29 @@ namespace SuperPengoMan
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Vector2 v in middleground)
+            if (0 != (enbaledBackgrounds & 1))
             {
-                spriteBatch.Draw(texture[1], new Vector2(v.X, 20), Color.White);
+                foreach (Vector2 v in middleground)
+                {
+                    spriteBatch.Draw(texture[1], new Vector2(v.X, 20), Color.White);
+                }
             }
-            foreach (Vector2 v in foreground)
+            if (0 != (enbaledBackgrounds & 2))
             {
-                spriteBatch.Draw(texture[0], new Vector2(v.X, 100), Color.White);
+                foreach (Vector2 v in foreground)
+                {
+                    spriteBatch.Draw(texture[0], new Vector2(v.X, 100), Color.White);
+                }
             }
+            if (0 != (enbaledBackgrounds & 4))
+            {
+                spriteBatch.Draw(startSign, new Vector2(Game1.TILE_SIZE * 10, Game1.TILE_SIZE * 11), Color.White);
+            }
+            if (0 != (enbaledBackgrounds & 8))
+            {
+                spriteBatch.Draw(levelEditorSign, new Vector2(Game1.TILE_SIZE * 17, Game1.TILE_SIZE * 11), Color.White);
+            }
+            
         }
 
         private void CreatForeGround()
@@ -98,6 +117,10 @@ namespace SuperPengoMan
                     middleground[i] = new Vector2(middleground[j].X + mgSpacing - 1, middleground[i].Y);
                 }
             }
+        }
+        public void EnableBackground(int bkgBits)
+        {
+            enbaledBackgrounds = enbaledBackgrounds | bkgBits;
         }
     }
 }
