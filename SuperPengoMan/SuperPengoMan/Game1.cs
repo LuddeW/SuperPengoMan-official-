@@ -20,6 +20,7 @@ namespace SuperPengoMan
         HandleGame handlegame;
         LevelReader levelreader;
         LevelReader menuLevelreader;
+        LevelEditor levelEditor;
 
         private enum GameState { Setup, StartMenu, HighScore, GameScreen, LevelEditor, EndGame }
         private GameState currentGameState = GameState.Setup;
@@ -47,7 +48,8 @@ namespace SuperPengoMan
             spriteBatch = new SpriteBatch(GraphicsDevice);
             levelreader = new LevelReader("Level1.txt");
             menuLevelreader = new LevelReader("MenuLevel.txt");
-            handlegame.CreateLevel(menuLevelreader[0]);
+            levelEditor = new LevelEditor(this, levelreader, new HandleOptionDelegate(HandleMenuOption));
+            handlegame.CreateLevel(menuLevelreader[0], TILE_SIZE, new Point(0, 0));
         }
         
         protected override void UnloadContent()
@@ -79,25 +81,31 @@ namespace SuperPengoMan
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, handlegame.ViewMatrix());
+            
             switch (currentGameState)
             {
                 case GameState.StartMenu:
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, handlegame.ViewMatrix());
                     handlegame.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
                 case GameState.HighScore:
                     break;
                 case GameState.GameScreen:
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, handlegame.ViewMatrix());
                     handlegame.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
                 case GameState.LevelEditor:
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, levelEditor.ViewMatrix());
+                    levelEditor.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
                 case GameState.EndGame:
                     nextGameStateState = GameState.StartMenu;
                     break;
             }
-            handlegame.Draw(spriteBatch);
-            spriteBatch.End();
+
             HandleNextState();
             base.Draw(gameTime);
         }
@@ -117,7 +125,7 @@ namespace SuperPengoMan
                         StartHandleGame(levelreader[0]);
                         break;
                     case GameState.LevelEditor:
-                        //levelEditor.InitEditor();
+                        levelEditor.Init();
                         break;
                     case GameState.EndGame:
                         break;
@@ -130,7 +138,7 @@ namespace SuperPengoMan
         {
             handlegame = new HandleGame(this, new HandleOptionDelegate(HandleMenuOption));
             handlegame.LoadContent();
-            handlegame.CreateLevel(level);
+            handlegame.CreateLevel(level, TILE_SIZE, new Point(0, 0));
         }
 
         private void HandleMenuOption(char menuOption)

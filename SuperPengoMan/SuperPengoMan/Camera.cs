@@ -10,15 +10,22 @@ namespace SuperPengoMan
     {
         Vector2 position;
         Matrix viewMatrix;
+
+        public Camera(int screenWidth, int viewTileSize, int gameAreaTilesWidth)
+        {
+            ScreenWidth = screenWidth;
+            ViewTileSize = viewTileSize;
+            GameAreaTilesWidth = gameAreaTilesWidth;
+        }
+
         public Matrix ViewMatrix
         {
             get { return viewMatrix;}
         }
 
-        public int ScreenWidth
-        {
-            get { return Game1.TILE_SIZE * 15; }
-        }
+        public int ScreenWidth { get; set; }
+        public int ViewTileSize { get; set; }
+        public int GameAreaTilesWidth { get; set; }
 
         public void Update(Vector2 pengoPos)
         {
@@ -27,9 +34,9 @@ namespace SuperPengoMan
             {
                 position.X = 0;
             }
-            else if (position.X > Game1.TILE_SIZE * 49 - ScreenWidth)
+            else if (position.X > Game1.TILE_SIZE * GameAreaTilesWidth - ScreenWidth)
             {
-                position.X = Game1.TILE_SIZE * 49 - ScreenWidth;
+                position.X = Game1.TILE_SIZE * GameAreaTilesWidth - ScreenWidth;
             }
             viewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));
         }

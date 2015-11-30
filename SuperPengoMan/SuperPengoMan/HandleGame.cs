@@ -29,6 +29,7 @@ namespace SuperPengoMan
             pengo.Update();
             enemy.Update();
             HandleFloorTile();
+            HandleTraps();
             HandleLadderTiles();
             HandleMenuTiles();
             HandlePengo();          

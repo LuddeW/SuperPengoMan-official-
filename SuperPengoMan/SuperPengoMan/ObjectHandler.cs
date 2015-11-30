@@ -52,23 +52,24 @@ namespace SuperPengoMan
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
-            camera = new Camera();
+            camera = new Camera(Game1.TILE_SIZE * 15, Game1.TILE_SIZE, 1);
         }
 
-        public void CreateLevel(Level level)
+        public void CreateLevel(Level level, int tileSize, Point startPos)
         {
+            camera.GameAreaTilesWidth = level.Cols;
             for (int row = 0; row < level.Rows; row++)
             {
                 for (int col = 0; col < level.Cols; col++)
                 {
-                    ObjectFactory(level.Get(row, col).GameObject, level.Get(row, col).Option, row, col);
+                    ObjectFactory(level.Get(row, col).GameObject, level.Get(row, col).Option, row, col, tileSize, startPos);
                 }
             }
         }
 
-        private void ObjectFactory(char objectChar, char option, int row, int col)
+        private void ObjectFactory(char objectChar, char option, int row, int col, int tileSize, Point startPos)
         {
-            Vector2 pos = new Vector2(Game1.TILE_SIZE * col, Game1.TILE_SIZE * row);
+            Vector2 pos = new Vector2(tileSize * col + startPos.X, tileSize * row + startPos.Y);
             switch (objectChar)
             {
                 case 'F':
