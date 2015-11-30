@@ -4,7 +4,7 @@ using System;
 
 namespace SuperPengoMan
 {
-    public class SpriteBatchObject
+    abstract class SpriteBatchObject
     {
 
         private static float scale = 1f;
@@ -26,7 +26,7 @@ namespace SuperPengoMan
                 scale = value;
             }
         }
-
+        abstract public void Draw(SpriteBatch spriteBatch);
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, Vector2 pos, Rectangle srcRect, Color color, float rotation, Vector2 origin, float scale, SpriteEffects spriteFx, float layerDepth)
         {
             spriteBatch.Draw(texture, pos, srcRect, color, rotation, origin, scale * Scale, spriteFx, layerDepth);

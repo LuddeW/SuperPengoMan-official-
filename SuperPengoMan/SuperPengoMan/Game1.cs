@@ -70,6 +70,7 @@ namespace SuperPengoMan
                     handlegame.Update();
                     break;
                 case GameState.LevelEditor:
+                    levelEditor.Update();
                     break;
                 case GameState.EndGame:
                     nextGameStateState = GameState.StartMenu;

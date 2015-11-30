@@ -42,6 +42,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObject\Cursor.cs" />
     <Compile Include="GameObject\Enemy.cs" />
     <Compile Include="GameObject\FloorTile.cs" />
     <Compile Include="GameObject\GameObject.cs" />
@@ -71,6 +72,7 @@
     <Content Include="Content\background.png" />
     <Content Include="Content\big_cloud.png" />
     <Content Include="Content\cloud.png" />
+    <Content Include="Content\cursor.png" />
     <Content Include="Content\ice_tile.png" />
     <Content Include="Content\Ladder.png" />
     <Content Include="Content\leveleditor_sign.png" />

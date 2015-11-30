@@ -17,7 +17,7 @@ namespace SuperPengoMan.GameObject
             this.pos = pos;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             Draw(spriteBatch, texture, pos, Color.White);
         }

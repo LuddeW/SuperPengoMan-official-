@@ -38,7 +38,7 @@ namespace SuperPengoMan
             MoveMiddleGround();
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             Draw(spriteBatch, background, new Rectangle(0, window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
 

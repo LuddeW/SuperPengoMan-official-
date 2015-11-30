@@ -100,29 +100,9 @@ namespace SuperPengoMan
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
-            backgrounds.Draw(spriteBatch);
-            foreach (Ladder ladderTile in ladder)
+            foreach (SpriteBatchObject sbo in spriteBatchObjects)
             {
-                ladderTile.Draw(spriteBatch);
-            }
-            enemy.Draw(spriteBatch);
-            pengo.Draw(spriteBatch);
-            foreach (FloorTile iceTile in floortile)
-            {
-                iceTile.Draw(spriteBatch);
-            }
-            foreach (WaterTile waterTile in watertile)
-            {
-                waterTile.Draw(spriteBatch);
-            }
-            foreach (Trap spike in trap)
-            {
-                spike.Draw(spriteBatch);
-            }
-            foreach (OptionCollisionTile menuTile in menuTiles)
-            {
-                menuTile.Draw(spriteBatch);
+                sbo.Draw(spriteBatch);
             }
         }
     }

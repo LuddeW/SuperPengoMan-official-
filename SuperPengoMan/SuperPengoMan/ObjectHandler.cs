@@ -27,6 +27,7 @@ namespace SuperPengoMan
         protected List<Trap> trap = new List<Trap>();
         protected List<Ladder> ladder = new List<Ladder>();
         protected List<OptionCollisionTile> menuTiles = new List<OptionCollisionTile>();
+        protected List<SpriteBatchObject> spriteBatchObjects = new List<SpriteBatchObject>();
         protected Pengo pengo;
         protected Enemy enemy;
 
@@ -52,6 +53,7 @@ namespace SuperPengoMan
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
+            spriteBatchObjects.Add(backgrounds);
             camera = new Camera(Game1.TILE_SIZE * 15, Game1.TILE_SIZE, 1);
         }
 
@@ -73,26 +75,38 @@ namespace SuperPengoMan
             switch (objectChar)
             {
                 case 'F':
-                    floortile.Add(new FloorTile(iceTile, pos));
+                    FloorTile ft = new FloorTile(iceTile, pos);
+                    floortile.Add(ft);
+                    spriteBatchObjects.Add(ft);
                     break;
                 case 'S':
                     pengoRespawnPos = pos;
                     pengo = new Pengo(penguin, pos);
+                    spriteBatchObjects.Add(pengo);
                     break;
                 case 'W':
-                    watertile.Add(new WaterTile(waterTile, pos));
+                    WaterTile wt = new WaterTile(waterTile, pos);
+                    watertile.Add(wt);
+                    spriteBatchObjects.Add(wt);
                     break;
                 case 'T':
-                    trap.Add(new Trap(spike, pos));
+                    Trap trp = new Trap(spike, pos);
+                    trap.Add(trp);
+                    spriteBatchObjects.Add(trp);
                     break;
                 case 'E':
                     enemy = new Enemy(snowball, pos);
+                    spriteBatchObjects.Add(enemy);
                     break;
                 case 'L':
-                    ladder.Add(new Ladder(ladderTile, pos));
+                    Ladder ldr = new Ladder(ladderTile, pos);
+                    ladder.Add(ldr);
+                    spriteBatchObjects.Add(ldr);
                     break;
                 case 'M':
-                    menuTiles.Add(new OptionCollisionTile(waterTile, pos, option, handleOptionDelegate));
+                    OptionCollisionTile mt = new OptionCollisionTile(waterTile, pos, option, handleOptionDelegate);
+                    menuTiles.Add(mt);
+                    spriteBatchObjects.Add(mt);
                     break;
                 case 'B':
                     int optionValue = option == '0' ? 0 : 1;
