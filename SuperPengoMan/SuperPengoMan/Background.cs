@@ -8,11 +8,12 @@ using System.Text;
 
 namespace SuperPengoMan
 {
-    class Background
+    class Background : SpriteBatchObject
     {
         List<Vector2> foreground, middleground;
         int fgSpacing, mgSpacing;
         float fgSpeed, mgSpeed;
+        Texture2D background;
         Texture2D[] texture;
         Texture2D startSign;
         Texture2D levelEditorSign;
@@ -22,6 +23,7 @@ namespace SuperPengoMan
         {
             this.window = window;
             this.texture = new Texture2D[2];
+            background = Content.Load<Texture2D>(@"background");
             texture[0] = Content.Load<Texture2D>(@"cloud");
             texture[1] = Content.Load<Texture2D>(@"big_cloud");
             startSign = Content.Load<Texture2D>(@"start_sign");
@@ -38,27 +40,29 @@ namespace SuperPengoMan
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            Draw(spriteBatch, background, new Rectangle(0, window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), background.Width, background.Height), Color.White);
+
             if (0 != (enbaledBackgrounds & 1))
             {
                 foreach (Vector2 v in middleground)
                 {
-                    spriteBatch.Draw(texture[1], new Vector2(v.X, 20), Color.White);
+                    Draw(spriteBatch,texture[1], new Vector2(v.X, 20), Color.White);
                 }
             }
             if (0 != (enbaledBackgrounds & 2))
             {
                 foreach (Vector2 v in foreground)
                 {
-                    spriteBatch.Draw(texture[0], new Vector2(v.X, 100), Color.White);
+                    Draw(spriteBatch, texture[0], new Vector2(v.X, 100), Color.White);
                 }
             }
             if (0 != (enbaledBackgrounds & 4))
             {
-                spriteBatch.Draw(startSign, new Vector2(Game1.TILE_SIZE * 10, Game1.TILE_SIZE * 11), Color.White);
+                Draw(spriteBatch, startSign, new Vector2(Game1.TILE_SIZE * 10, Game1.TILE_SIZE * 11), Color.White);
             }
             if (0 != (enbaledBackgrounds & 8))
             {
-                spriteBatch.Draw(levelEditorSign, new Vector2(Game1.TILE_SIZE * 17, Game1.TILE_SIZE * 11), Color.White);
+                Draw(spriteBatch, levelEditorSign, new Vector2(Game1.TILE_SIZE * 17, Game1.TILE_SIZE * 11), Color.White);
             }
             
         }

@@ -13,9 +13,6 @@ namespace SuperPengoMan.GameObject
         public Rectangle srcRect;
         private Clock clock;
 
-        private Texture2D glide;
-        private Texture2D jump;
-        private Texture2D climb;
         KeyboardState keyState;
         public Color[] texData;
 
@@ -33,12 +30,9 @@ namespace SuperPengoMan.GameObject
         public bool isOnLadder = false;
         
 
-        public Pengo(Texture2D texture, Texture2D glide, Texture2D jump, Texture2D climb, Vector2 pos) : base(texture, pos)
+        public Pengo(Texture2D texture, Vector2 pos) : base(texture, pos)
         {
             clock = new Clock();
-            this.glide = glide;
-            this.jump = jump;
-            this.climb = climb;
             speed = new Vector2(1, 1);
             windowY = Game1.TILE_SIZE * 15;
             hitbox = new Rectangle((int)pos.X, (int)pos.Y, Game1.TILE_SIZE, Game1.TILE_SIZE);
@@ -211,7 +205,7 @@ namespace SuperPengoMan.GameObject
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);              
+            Draw(spriteBatch, texture, pos, srcRect, Color.White, 0f, new Vector2(), 1f, spriteFx, 0f);              
         }
 
         private int PengoAnimation()

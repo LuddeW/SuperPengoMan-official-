@@ -52,10 +52,13 @@
     <Compile Include="GameObject\WaterTile.cs" />
     <Compile Include="HandleGame.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="LevelEditor.cs" />
     <Compile Include="LevelItem.cs" />
     <Compile Include="LevelReader.cs" />
+    <Compile Include="ObjectHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpriteBatchObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
