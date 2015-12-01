@@ -17,7 +17,13 @@ namespace SuperPengoMan
         {
              
         }
-       
+
+        public override void LoadContent()
+        {
+            base.LoadContent();
+            spriteBatchObjects.Add(backgrounds);
+        }
+
         public void Update()
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))

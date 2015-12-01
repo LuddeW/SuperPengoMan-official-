@@ -43,7 +43,7 @@ namespace SuperPengoMan
             this.handleOptionDelegate = handleOptionDelegate;
         }
 
-        public void LoadContent()
+        public virtual void LoadContent()
         {
             penguin = game.Content.Load<Texture2D>(@"penguin_spritesheet");
             iceTile = game.Content.Load<Texture2D>(@"ice_tile");
@@ -53,7 +53,6 @@ namespace SuperPengoMan
             snowball = game.Content.Load<Texture2D>(@"snowball");
             ladderTile = game.Content.Load<Texture2D>(@"Ladder");
             backgrounds = new Background(game.Content, game.Window);
-            spriteBatchObjects.Add(backgrounds);
             camera = new Camera(Game1.TILE_SIZE * 15, Game1.TILE_SIZE, 1);
         }
 

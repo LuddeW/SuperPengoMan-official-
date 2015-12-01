@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SuperPengoMan.GameObject;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,9 @@ namespace SuperPengoMan
 
         public void Update()
         {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Back))
+                handleOptionDelegate('2');
+
             cursor.Update();
             camera.Update(cursor.pos);
         }
@@ -85,31 +89,14 @@ namespace SuperPengoMan
         public void Draw(SpriteBatch spriteBatch)
         {
             SpriteBatchObject.Scale = 1.0f * EditorTileSize / Game1.TILE_SIZE;
-            foreach (Ladder ladderTile in ladder)
+            foreach (SpriteBatchObject sbo in spriteBatchObjects)
             {
-                ladderTile.Draw(spriteBatch);
-            }
-            enemy.Draw(spriteBatch);
-            pengo.Draw(spriteBatch);
-            foreach (FloorTile iceTile in floortile)
-            {
-                iceTile.Draw(spriteBatch);
-            }
-            foreach (WaterTile waterTile in watertile)
-            {
-                waterTile.Draw(spriteBatch);
-            }
-            foreach (Trap spike in trap)
-            {
-                spike.Draw(spriteBatch);
-            }
-            foreach (OptionCollisionTile menuTile in menuTiles)
-            {
-                menuTile.Draw(spriteBatch);
+                sbo.Draw(spriteBatch);
             }
             DrawGrid(spriteBatch);
             cursor.Draw(spriteBatch);
             SpriteBatchObject.Scale = 1f;
+            Console.WriteLine("GameObject:" + CurrentLevel.Get(cursor.CursorTilePosY(), cursor.CursorTilePosX()).GameObject);
         }
 
         private void DrawGrid(SpriteBatch spriteBatch)
