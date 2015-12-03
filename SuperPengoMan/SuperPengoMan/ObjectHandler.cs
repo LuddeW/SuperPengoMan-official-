@@ -83,14 +83,11 @@ namespace SuperPengoMan
     {
         internal Texture2D texCoin;
         internal Texture2D texPenguin;
-        internal Texture2D texPenguin_jump;
-        internal Texture2D texPenguin_glide;
         internal Texture2D texIceTile;
         internal Texture2D texWaterTile;
         internal Texture2D texSpike;
         internal Texture2D texSnowball;
         internal Texture2D texLadderTile;
-        internal Texture2D texPenguin_climb;
         internal Texture2D texGoalTile;
         internal Texture2D texRubyTile;
 
@@ -111,11 +108,16 @@ namespace SuperPengoMan
         internal Game1.HandleOptionDelegate handleGoalOptionDelegate = null;
         internal Game1.HandleOptionDelegate handleRubyOptionDelegate = null;
 
-        public ObjectHandler(Game1.AddPointsDelegate addPointsDelegate, 
+        internal Background backgrounds;
+        internal Game game;
+
+
+        public ObjectHandler(Game game, Game1.AddPointsDelegate addPointsDelegate, 
             Game1.HandleOptionDelegate handleMenuOptionDelegate, 
             Game1.HandleOptionDelegate handleGoalOptionDelegate,
             Game1.HandleOptionDelegate handleRubyOptionDelegate)
         {
+            this.game = game;
             this.addPointsDelegate = addPointsDelegate;
             this.handleMenuOptionDelegate = handleMenuOptionDelegate;
             this.handleGoalOptionDelegate = handleGoalOptionDelegate;
@@ -128,9 +130,6 @@ namespace SuperPengoMan
 
             texCoin = content.Load<Texture2D>(@"Coin");
             texPenguin = content.Load<Texture2D>(@"penguin_spritesheet");
-            texPenguin_jump = content.Load<Texture2D>(@"Penguin_jump");
-            texPenguin_glide = content.Load<Texture2D>(@"Penguin_glide");
-            texPenguin_climb = content.Load<Texture2D>(@"Penguin_climb");
             texIceTile = content.Load<Texture2D>(@"ice_tile");
             texWaterTile = content.Load<Texture2D>(@"water_tile");
             texSpike = content.Load<Texture2D>(@"Spike");
@@ -142,6 +141,8 @@ namespace SuperPengoMan
 
         public void CreateLevel(Level level, int tileSize, Point StartPos)
         {
+            backgrounds = new Background(game, level.Cols);
+
             for (int row = 0; row < level.Rows; row++)
             {
                 for (int col = 0; col < level.Cols; col++)
@@ -151,9 +152,9 @@ namespace SuperPengoMan
             }
         }
 
-        internal Vector2 ScreenPos(Point StartPos, int tileSize, int ixXPos, int ixYPos)
+        internal Vector2 ScreenPos(Point StartPos, int tileSize, int col, int row)
         {
-            return new Vector2(StartPos.X + tileSize * ixXPos, StartPos.Y + tileSize * ixYPos);
+            return new Vector2(StartPos.X + tileSize * col, StartPos.Y + tileSize * row);
         }
 
         private void ObjectFactory(char gameObject, char option, int row, int col, int tileSize, Point StartPos)
@@ -174,7 +175,7 @@ namespace SuperPengoMan
             }
             if (gameObject == KeyList.TrapKey.Char)
             {
-                AddTrap(pos);
+                AddTrap(pos, option == '1');
             }
             if (gameObject == KeyList.EnemyKey.Char)
             {
@@ -200,6 +201,11 @@ namespace SuperPengoMan
             {
                 AddRubyTile(pos, option, handleRubyOptionDelegate);
             }
+            if (gameObject == KeyList.BackgroundKey.Char)
+            {
+                int optionVal = option == '0' ? 0 : 1;
+                backgrounds.EnableBackground(Convert.ToInt32(Math.Pow(2, col))*optionVal);
+            }
         }
 
         internal void AddFloortile(Vector2 pos)
@@ -209,7 +215,7 @@ namespace SuperPengoMan
 
         internal void NewPengo(Vector2 pos)
         {
-            pengo = new Pengo(texPenguin, texPenguin_glide, texPenguin_jump, texPenguin_climb, pos);
+            pengo = new Pengo(texPenguin, pos);
         }
 
         internal void AddWaterTile(Vector2 pos)
@@ -217,9 +223,9 @@ namespace SuperPengoMan
             waterTiles.Add(new WaterTile(texWaterTile, pos));
         }
 
-        internal void AddTrap(Vector2 pos)
+        internal void AddTrap(Vector2 pos, bool rotated)
         {
-            traps.Add(new Trap(texSpike, pos));
+            traps.Add(new Trap(texSpike, pos, rotated));
         }
 
         internal Enemy AddEnemy(Vector2 pos)

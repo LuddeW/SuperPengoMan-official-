@@ -74,9 +74,11 @@
     <Content Include="Content\big_cloud.png" />
     <Content Include="Content\cloud.png" />
     <Content Include="Content\coin.png" />
+    <Content Include="Content\cursor.png" />
     <Content Include="Content\goal.png" />
     <Content Include="Content\ice_tile.png" />
     <Content Include="Content\Ladder.png" />
+    <Content Include="Content\leveleditor_sign.png" />
     <Content Include="Content\penguin_climb.png" />
     <Content Include="Content\penguin_glide.png" />
     <Content Include="Content\penguin_jump.png" />
@@ -85,6 +87,7 @@
     <Content Include="Content\snowball.png" />
     <Content Include="Content\snowcave.png" />
     <Content Include="Content\spike.png" />
+    <Content Include="Content\start_sign.png" />
     <Content Include="Content\water_tile.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>

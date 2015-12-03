@@ -9,7 +9,6 @@ namespace SuperPengoMan
     public class Camera
     {
         Vector2 position;
-        Matrix viewMatrix;
 
         public Camera(int screenWidth, int viewTileSize, int gameAreaTilesWidth)
         {
@@ -31,9 +30,9 @@ namespace SuperPengoMan
             {
                 position.X = 0;
             }
-            else if (position.X > Game1.TILE_SIZE * 49 - ScreenWidth)
+            else if (position.X > ViewTileSize * GameAreaTilesWidth - ScreenWidth)
             {
-                position.X = Game1.TILE_SIZE * 49 - ScreenWidth;
+                position.X = ViewTileSize * GameAreaTilesWidth - ScreenWidth;
             }
 
             ViewMatrix = Matrix.CreateTranslation(new Vector3(-position, 0));

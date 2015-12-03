@@ -14,8 +14,6 @@ namespace SuperPengoMan
         static float ADD_TËXTOFFSET_Y = 15f;
         static int DEFAULT_ROWS_IN_LEVEL = 15;
 
-        private Game game;
-
         private Camera camera;
         private LevelReader levelsLevelReader;
         int currentlevel = -1;
@@ -28,15 +26,14 @@ namespace SuperPengoMan
 
         public LevelEditor(Game game, LevelReader levelsLevelReader,
                             Game1.HandleOptionDelegate handleMenuOptionDelegate) :
-                            base(null, handleMenuOptionDelegate, null, null)
+                            base( game, null, handleMenuOptionDelegate, null, null)
         {
-            this.game = game;
             this.levelsLevelReader = levelsLevelReader;
             LoadContent(game.Content);
             cursorTex = game.Content.Load<Texture2D>(@"cursor");
             hudFont = game.Content.Load<SpriteFont>(@"HUDFont");
             EditorTileSize = Game1.TILE_SIZE / 2;
-            camera = new Camera(EditorTileSize*45, EditorTileSize, 1);
+            camera = new Camera(EditorTileSize*30, EditorTileSize, 1);
             cursor = new Cursor(cursorTex, new Vector2(gameAreaStartPos.X, gameAreaStartPos.Y), EditorTileSize);
             keyState = Keyboard.GetState();
         }
@@ -136,14 +133,14 @@ namespace SuperPengoMan
         {
             if (CurrentLevel != null)
             {
-                if (cursor.CursorTilePosX() == (CurrentLevel.Cols - 1))
+                if (cursor.Col == (CurrentLevel.Cols - 1))
                 {
-                    int cursorXPos = CurrentLevel.Cols - 2;
-                    if (cursorXPos < 0)
+                    int col = CurrentLevel.Cols - 2;
+                    if (col < 0)
                     {
-                        cursorXPos = 0;
+                        col = 0;
                     }
-                    cursor.SetPos(cursorXPos, cursor.CursorTilePosX());
+                    cursor.SetPos(col, cursor.Col);
                 }
                 for (int row = 0; row < CurrentLevel.Rows; row++)
                 {
@@ -171,7 +168,7 @@ namespace SuperPengoMan
 
         private void SaveLevels()
         {
-            throw new NotImplementedException();
+            levelsLevelReader.WriteFile();
         }
 
         private void ResetLevel()
@@ -203,11 +200,11 @@ namespace SuperPengoMan
             Keys[] keys = keyState.GetPressedKeys();
             if(keys.Length > 0)
             { 
-                CheckKeys(cursor.CursorTilePosX(),cursor.CursorTilePosY(), keys);
+                CheckKeys(cursor.Col,cursor.Row, keys);
             }
         }
 
-        private void CheckKeys(int cursorXPos, int cursorYPos, Keys[] keys)
+        private void CheckKeys(int col, int row, Keys[] keys)
         {
             if (keys.Length == 1 && CurrentLevel != null)
             {
@@ -215,8 +212,8 @@ namespace SuperPengoMan
                 {
                     if (keyItem.Key != KeyList.MenuTileKey.Key && WasKeyPressed(keyItem.Key))
                     {
-                        LevelItem levelItem = CurrentLevel.Get(cursorYPos, cursorXPos);
-                        ChangeTileObject(cursorXPos, cursorYPos, keyItem, levelItem);
+                        LevelItem levelItem = CurrentLevel.Get(row, col);
+                        ChangeTileObject(col, row, keyItem, levelItem);
                     }
 
                 }
@@ -224,8 +221,8 @@ namespace SuperPengoMan
                 {
                     if (WasKeyPressed(keyItem.Key))
                     {
-                        LevelItem levelItem = CurrentLevel.Get(cursorYPos, cursorXPos);
-                        ChangeOptionObject(cursorXPos, cursorYPos, keyItem, levelItem);
+                        LevelItem levelItem = CurrentLevel.Get(row, col);
+                        ChangeOptionObject(col, row, keyItem, levelItem);
                     }
 
                 }
@@ -269,8 +266,13 @@ namespace SuperPengoMan
         private void ChangeTileObject(int cursorXPos, int cursorYPos, KeyItem keyItem, LevelItem levelItem)
         {
             RemoveTile(cursorXPos, cursorYPos);
+
             char option = KeyList.Option0Key.Char;
 
+            if (levelItem.GameObject == KeyList.BackgroundKey.Char)
+            {
+                backgrounds.DisableBackground(Convert.ToInt32(Math.Pow(2, cursorXPos)));
+            }
             if (keyItem.Key == KeyList.FloorTileKey.Key)
             {
                 AddFloortile(ScreenPos(cursorXPos, cursorYPos));
@@ -289,7 +291,7 @@ namespace SuperPengoMan
             }
             if (keyItem.Key == KeyList.TrapKey.Key)
             {
-                AddTrap(ScreenPos(cursorXPos, cursorYPos));
+                AddTrap(ScreenPos(cursorXPos, cursorYPos), option == '1');
             }
             if (keyItem.Key == KeyList.EnemyKey.Key)
             {
@@ -334,6 +336,21 @@ namespace SuperPengoMan
                     option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
                 }
                 AddGoalTile(ScreenPos(cursorXPos, cursorYPos), option, null);
+            }
+            if (keyItem.Key == KeyList.BackgroundKey.Key)
+            {
+                if (CurrentLevel.Get(cursorYPos, cursorXPos).GameObject == KeyList.BackgroundKey.Char)
+                {
+                    option = CurrentLevel.Get(cursorYPos, cursorXPos).Option;
+                }
+                if( option == '0')
+                {
+                    backgrounds.DisableBackground(Convert.ToInt32(Math.Pow(2, cursorXPos)));
+                }
+                else
+                {
+                    backgrounds.EnableBackground(Convert.ToInt32(Math.Pow(2, cursorXPos)));
+                }
             }
             levelItem.Option = option;
             levelItem.GameObject = keyItem.Char;
@@ -503,39 +520,40 @@ namespace SuperPengoMan
         }
 
 
-        private void ChangeOptionObject(int cursorXPos, int cursorYPos, KeyItem keyItem, LevelItem levelItem)
+        private void ChangeOptionObject(int col, int row, KeyItem keyItem, LevelItem levelItem)
         {
-            //FloorTile ft = FindFlorTile(cursorXPos, cursorYPos);
+            //FloorTile ft = FindFlorTile(col, row);
 
-            //Pengo pengo = FindPengo(cursorXPos, cursorYPos);
+            //Pengo pengo = FindPengo(col, row);
 
-            //WaterTile wt = FindWaterTile(cursorXPos, cursorYPos);
+            //WaterTile wt = FindWaterTile(col, row);
 
-            //Trap trap = FindTrap(cursorXPos, cursorYPos);
+            Trap trap = FindTrap(col, row);
+            trap.Rotated = keyItem.Char == '1';
 
-            //Enemy enemy = FindEnemy(cursorXPos, cursorYPos);
+            //Enemy enemy = FindEnemy(col, row);
 
-            //Ladder ladder = FindLadder(cursorXPos, cursorYPos);
+            //Ladder ladder = FindLadder(col, row);
 
-            Coin coin = FindCoin(cursorXPos, cursorYPos);
+            Coin coin = FindCoin(col, row);
             if (coin != null)
             {
                 coin.SetOption(keyItem.Char);
             }
 
-            OptionCollisionTile mt = FindMenuTile(cursorXPos, cursorYPos);
+            OptionCollisionTile mt = FindMenuTile(col, row);
             if (mt != null)
             {
                 mt.SetOption(keyItem.Char);
             }
 
-            OptionCollisionTile rt = FindRubyTile(cursorXPos, cursorYPos);
+            OptionCollisionTile rt = FindRubyTile(col, row);
             if (rt != null)
             {
                 rt.SetOption(keyItem.Char);
             }
 
-            OptionCollisionTile gt = FindGoalTile(cursorXPos, cursorYPos);
+            OptionCollisionTile gt = FindGoalTile(col, row);
             if (gt != null)
             {
                 gt.SetOption(keyItem.Char);
@@ -547,6 +565,7 @@ namespace SuperPengoMan
         public void Draw(SpriteBatch spriteBatch)
         {
             SpriteBatchObject.Scale = 1.0f * EditorTileSize / Game1.TILE_SIZE;
+            backgrounds.Draw(spriteBatch);
             foreach (FloorTile iceTile in floorTiles)
             {
                 iceTile.Draw(spriteBatch);
@@ -582,7 +601,7 @@ namespace SuperPengoMan
             DrawGrid(spriteBatch);
             cursor.Draw(spriteBatch);
             SpriteBatchObject.Scale = 1f;
-            DrawTileData(spriteBatch, cursor.CursorTilePosX(), cursor.CursorTilePosY());
+            DrawTileData(spriteBatch, cursor.Col, cursor.Row);
         }
 
         private void DrawGrid(SpriteBatch spriteBatch)
@@ -637,13 +656,13 @@ namespace SuperPengoMan
 
         }
 
-        private void DrawTileData(SpriteBatch spriteBatch, int tilePosX, int tilePosY)
+        private void DrawTileData(SpriteBatch spriteBatch, int col, int row)
         {
             if (CurrentLevel != null)
             {
                 string text;
 
-                LevelItem levelItem = CurrentLevel.Get(tilePosY, tilePosX);
+                LevelItem levelItem = CurrentLevel.Get(row, col);
                 text = "Tile: " + levelItem.GameObject;
                 DrawString(spriteBatch, text, 0);
 
@@ -656,7 +675,7 @@ namespace SuperPengoMan
                 text = "Cols: " + CurrentLevel.Cols + " Rows: " + CurrentLevel.Rows;
                 DrawString(spriteBatch, text, 3);
 
-                text = "X: " + cursor.CursorTilePosX() + " Y: " + cursor.CursorTilePosY();
+                text = "Col: " + cursor.Col + " Row: " + cursor.Row;
                 DrawString(spriteBatch, text, 4);
 
                 text = "Levels: " + levelsLevelReader.Count;

@@ -39,14 +39,20 @@ namespace SuperPengoMan.GameObject
             }
         }
 
-        public int CursorTilePosX()
+        public int Col
         {
-            return Convert.ToInt32((pos.X - StartPos.X)/Step);
+            get
+            { 
+                return Convert.ToInt32((pos.X - StartPos.X)/Step);
+            }
         }
 
-        public int CursorTilePosY()
+        public int Row
         {
-            return Convert.ToInt32((pos.Y - StartPos.Y) / Step);
+            get
+            {
+                return Convert.ToInt32((pos.Y - StartPos.Y) / Step);
+            }
         }
 
         private bool WasKeyPressed(Keys key)
@@ -97,11 +103,6 @@ namespace SuperPengoMan.GameObject
             {
                 pos.Y = (StartPos.Y + (TilesHeight - 1) * Step);
             }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Draw(spriteBatch, texture, pos, Color.White);
         }
 
     }

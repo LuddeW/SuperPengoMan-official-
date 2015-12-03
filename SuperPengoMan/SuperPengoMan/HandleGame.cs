@@ -12,23 +12,17 @@ namespace SuperPengoMan
 {
     class HandleGame: ObjectHandler
     {
-        Game game;
-
-        Background backgrounds;
-
         Point gameTiles = new Point(0,0);
-
         Camera camera;
 
         public HandleGame(Game game, Game1.AddPointsDelegate addPointsDelegate, 
                                 Game1.HandleOptionDelegate handleMenuOptionDelegate,
                                 Game1.HandleOptionDelegate handleGoalOptionDelegate,
                                 Game1.HandleOptionDelegate handleRubyOptionDelegate) :
-                                base(addPointsDelegate, handleMenuOptionDelegate,
+                                base(game, addPointsDelegate, handleMenuOptionDelegate,
                                                             handleGoalOptionDelegate,
                                                             handleRubyOptionDelegate)
         {
-            this.game = game;
         }
 
         public Matrix ViewMatrix
@@ -49,7 +43,6 @@ namespace SuperPengoMan
             camera.GameAreaTilesWidth = level.Cols;
             gameTiles.Y = level.Rows;
             gameTiles.X = level.Cols;
-            backgrounds = new Background(game, gameTiles);
             CreateLevel(level, Game1.TILE_SIZE, new Point(0, 0));
         }
 
@@ -65,7 +58,7 @@ namespace SuperPengoMan
             {
                 game.Exit();
             }
-            else
+            else if (pengo != null)
             {
                 pengo.Update();
                 foreach (OptionCollisionTile menuTile in menuTiles)
@@ -161,7 +154,10 @@ namespace SuperPengoMan
             {
                 coin.Draw(spriteBatch);
             }
-            pengo.Draw(spriteBatch);
+            if (pengo != null)
+            {
+                pengo.Draw(spriteBatch);
+            }
             foreach (WaterTile waterTile in waterTiles)
             {
                 waterTile.Draw(spriteBatch);

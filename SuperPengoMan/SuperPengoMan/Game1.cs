@@ -17,7 +17,7 @@ namespace SuperPengoMan
 
         private HandleGame handlegame;
         private LevelEditor levelEditor;
-        private enum GameState { Setup, StartMenu, HighScore, GameScreen, LevelEditor, EndGame }
+        private enum GameState { Setup, StartMenu, HighScore, NextLevel, GameScreen, LevelEditor, EndGame }
         private GameState currentGameState = GameState.Setup;
         private GameState nextGameStateState = GameState.StartMenu;
 
@@ -62,11 +62,17 @@ namespace SuperPengoMan
                 case GameState.StartMenu:
                     handlegame.Update();
                     break;
-
                 case GameState.HighScore:
-
                     break;
-
+                case GameState.NextLevel:
+                    nextGameStateState = GameState.GameScreen;
+                    currentLevel++;
+                    if (currentLevel >= levelsLevelReader.Count)
+                    {
+                        currentLevel = 0;
+                        nextGameStateState = GameState.StartMenu;
+                    }
+                    break;
                 case GameState.GameScreen:
                     handlegame.Update();
                     break;
@@ -171,6 +177,7 @@ namespace SuperPengoMan
 
         private void HandleGoalOption(char goalOption)
         {
+            nextGameStateState = GameState.NextLevel;
         }
 
         private void HandleRubyOption(char rubyOption)

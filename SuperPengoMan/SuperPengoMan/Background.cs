@@ -11,7 +11,7 @@ namespace SuperPengoMan
     class Background: SpriteBatchObject
     {
         Game game;
-        Point gameTiles;
+        int tilesWidth;
         List<Vector2> foregroundVector, middlegroundVector;
         int fgSpacing, mgSpacing;
         float fgSpeed, mgSpeed;
@@ -21,20 +21,20 @@ namespace SuperPengoMan
         Texture2D foreground;
         Texture2D caveBackground;
 
-        public Background(Game game, Point gametiles)
+        int enbaledBackgrounds;
+
+        public Background(Game game, int tilesWidth)
         {
             this.game = game;
-            this.gameTiles = gametiles;
-
+            this.tilesWidth = tilesWidth;
+            enbaledBackgrounds = 0;
             foreground = game.Content.Load<Texture2D>(@"cloud");
             middleground = game.Content.Load<Texture2D>(@"big_cloud");
             background = game.Content.Load<Texture2D>(@"background");
             caveBackground = game.Content.Load<Texture2D>(@"snowcave");
-
             fgSpeed = 0.75f;
-            CreateLayer(ref foregroundVector, ref fgSpacing, foreground.Width, foreground.Height);
             mgSpeed = 0.3f;
-            CreateLayer(ref middlegroundVector, ref mgSpacing, middleground.Width, foreground.Height - middleground.Height);
+            CreateLayers();
         }
 
         public void Update()
@@ -43,18 +43,46 @@ namespace SuperPengoMan
             MoveLayer(middlegroundVector, mgSpacing, mgSpeed);
         }
 
+        internal int TileWidth
+        {
+            get { return tilesWidth; }
+            set
+            {
+                tilesWidth = value;
+                CreateLayers();
+            }
+        }
+
+        private void CreateLayers()
+        {
+            CreateLayer(ref foregroundVector, ref fgSpacing, foreground.Width, foreground.Height);
+            CreateLayer(ref middlegroundVector, ref mgSpacing, middleground.Width, foreground.Height - middleground.Height);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
-            Draw(spriteBatch, background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), 
-                                background.Width, background.Height), Color.White);
-            Draw(spriteBatch, caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
-            foreach (Vector2 v in middlegroundVector)
+            if( 0 != (enbaledBackgrounds & 1))
             {
-                Draw(spriteBatch, middleground, new Vector2(v.X, 20), Color.White);
+                Draw(spriteBatch, background, new Rectangle(0, game.Window.ClientBounds.Height - background.Height - (1 * Game1.TILE_SIZE), 
+                                    background.Width, background.Height), Color.White);
             }
-            foreach (Vector2 v in foregroundVector)
+            if (0 != (enbaledBackgrounds & 2))
             {
-                Draw(spriteBatch, foreground, new Vector2(v.X, 100), Color.White);
+                Draw(spriteBatch, caveBackground, new Vector2(Game1.TILE_SIZE * 37, Game1.TILE_SIZE * 9), Color.White);
+            }
+            if (0 != (enbaledBackgrounds & 4))
+            {
+                foreach (Vector2 v in middlegroundVector)
+                {
+                    Draw(spriteBatch, middleground, new Vector2(v.X, 20), Color.White);
+                }
+            }
+            if (0 != (enbaledBackgrounds & 8))
+            {
+                foreach (Vector2 v in foregroundVector)
+                {
+                    Draw(spriteBatch, foreground, new Vector2(v.X, 100), Color.White);
+                }
             }
         }
 
@@ -62,7 +90,7 @@ namespace SuperPengoMan
         {
             layerVector = new List<Vector2>();
             spacing = width + 3 * Game1.TILE_SIZE;
-            for (int i = 0; i < (Game1.TILE_SIZE * (gameTiles.X -1) / spacing) + 2; i++)
+            for (int i = 0; i < (Game1.TILE_SIZE * (tilesWidth -1) / spacing) + 2; i++)
             {
                 layerVector.Add(new Vector2(i * spacing, game.Window.ClientBounds.Height - height));
             }
@@ -83,6 +111,16 @@ namespace SuperPengoMan
                     layerVector[i] = new Vector2(layerVector[j].X + spacing - 1, layerVector[i].Y);
                 }
             }
+        }
+
+        public void EnableBackground(int bkgBits)
+        {
+            enbaledBackgrounds = enbaledBackgrounds | bkgBits;
+        }
+
+        public void DisableBackground(int bkgBits)
+        {
+            enbaledBackgrounds = enbaledBackgrounds & (0 ^ bkgBits);
         }
     }
 }
